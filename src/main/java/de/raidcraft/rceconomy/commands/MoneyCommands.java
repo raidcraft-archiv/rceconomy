@@ -72,7 +72,7 @@ public class MoneyCommands {
 
             plugin.modify(sender.getName(), -amount);
             plugin.modify(target, amount);
-            sender.sendMessage(ChatColor.GREEN + "Du hast '" + target + "' " + CustomItemUtil.getSellPriceString(amount) + ChatColor.GREEN + " überwiesen!");
+            sender.sendMessage(ChatColor.GREEN + "Du hast '" + ChatColor.YELLOW + target + ChatColor.GREEN + "' " + CustomItemUtil.getSellPriceString(round(amount)) + ChatColor.GREEN + " überwiesen!");
         }
 
         @Command(
@@ -104,7 +104,7 @@ public class MoneyCommands {
             }
 
             plugin.modify(target, amount);
-            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + CustomItemUtil.getSellPriceString(amount) + ChatColor.GREEN + " begünstigt!");
+            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + CustomItemUtil.getSellPriceString(round(amount)) + ChatColor.GREEN + " begünstigt!");
         }
 
         @Command(
@@ -126,7 +126,7 @@ public class MoneyCommands {
             }
 
             plugin.modify(target, -amount);
-            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + CustomItemUtil.getSellPriceString(amount) + ChatColor.GREEN + " belastet!");
+            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + CustomItemUtil.getSellPriceString(round(amount)) + ChatColor.GREEN + " belastet!");
         }
 
         @Command(
@@ -145,7 +145,12 @@ public class MoneyCommands {
             }
 
             plugin.set(target, amount);
-            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde auf " + CustomItemUtil.getSellPriceString(amount) + ChatColor.GREEN + " gesetzt!");
+            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde auf " + CustomItemUtil.getSellPriceString(round(amount)) + ChatColor.GREEN + " gesetzt!");
+        }
+        private double round(double d) {
+
+            return Math.round(d*100)/100.0;
         }
     }
+
 }
