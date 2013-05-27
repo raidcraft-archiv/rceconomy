@@ -50,6 +50,7 @@ public class RCEconomyPlugin extends BasePlugin {
 
     public void createAccount(String accountName) {
 
+        RaidCraft.getTable(BalanceTable.class).createAccount(accountName);
         RaidCraft.getTable(BalanceTable.class).set(accountName, config.initialAmount);
     }
 
