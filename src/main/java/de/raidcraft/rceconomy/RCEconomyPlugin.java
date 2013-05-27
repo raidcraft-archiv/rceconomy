@@ -53,7 +53,7 @@ public class RCEconomyPlugin extends BasePlugin {
         RaidCraft.getTable(BalanceTable.class).set(accountName, config.initialAmount);
     }
 
-    private void deleteAccount(String accountName) {
+    public void deleteAccount(String accountName) {
 
         RaidCraft.getTable(BalanceTable.class).deleteAccount(accountName);
     }
@@ -72,6 +72,11 @@ public class RCEconomyPlugin extends BasePlugin {
 
         double balance = RaidCraft.getTable(BalanceTable.class).getBalance(accountName);
         return CustomItemUtil.getSellPriceString(balance);
+    }
+
+    public String getFormattedAmount(double amount) {
+
+        return CustomItemUtil.getSellPriceString(amount);
     }
 
     public boolean hasEnough(String accountName, double amount) {
