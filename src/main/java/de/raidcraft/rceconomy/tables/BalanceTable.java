@@ -84,15 +84,24 @@ public class BalanceTable extends Table {
                 return balance;
             }
             resultSet.close();
+            createAccount(accountName);
+        } catch (SQLException e) {
+            RaidCraft.LOGGER.warning(e.getMessage());
+        }
+        return 0;
+    }
+
+    public void createAccount(String accountName) {
+
+        try {
             executeUpdate("INSERT INTO " + getTableName() + " (name, balance) " +
                     "VALUES (" +
-                    "'" + accountName + "'" + "," +
+                    "'" + accountName.toLowerCase() + "'" + "," +
                     "'" + 0 + "'" +
                     ");");
         } catch (SQLException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
         }
-        return 0;
     }
 
     public void deleteAccount(String accountName) {
