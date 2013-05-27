@@ -2,11 +2,11 @@ package de.raidcraft.rceconomy.commands;
 
 import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 /**
  * Author: Philip
@@ -104,18 +104,14 @@ public class MoneyCommands {
                 throw new CommandException("Du kannst nicht an dich selbst überweisen!");
             }
 
-            String targetFriendlyName = target;
-            Player targetPlayer = Bukkit.getPlayer(target);
-            String amountName = plugin.getFormattedAmount(round(amount));
-
-            if(targetPlayer != null) {
-                targetFriendlyName = targetPlayer.getName();
-                targetPlayer.sendMessage(ChatColor.YELLOW + sender.getName() + ChatColor.GREEN + " hat dir " + amountName + ChatColor.GREEN + " überwiesen!");
+            if(Bukkit.getPlayer(target) != null) {
+                target = Bukkit.getPlayer(target).getName();
             }
 
-            plugin.modify(sender.getName(), -amount);
-            plugin.modify(target, amount);
-            sender.sendMessage(ChatColor.GREEN + "Du hast '" + ChatColor.YELLOW + targetFriendlyName + ChatColor.GREEN + "' " + amountName + ChatColor.GREEN + " überwiesen!");
+            String detail = sender.getName() + " --> " + target;
+            plugin.modify(sender.getName(), -amount, BalanceSource.PAY_COMMAND, detail);
+            plugin.modify(target, amount, BalanceSource.PAY_COMMAND, detail);
+
         }
 
         @Command(
@@ -147,7 +143,8 @@ public class MoneyCommands {
                 throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
             }
 
-            plugin.modify(target, amount);
+            String detail = context.getJoinedStrings(2);
+            plugin.modify(target, amount, BalanceSource.ADMIN_COMMAND, detail);
             sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + plugin.getFormattedAmount(round(amount)) + ChatColor.GREEN + " begünstigt!");
         }
 
@@ -170,7 +167,8 @@ public class MoneyCommands {
                 throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
             }
 
-            plugin.modify(target, -amount);
+            String detail = context.getJoinedStrings(2);
+            plugin.modify(target, -amount, BalanceSource.ADMIN_COMMAND, detail);
             sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + plugin.getFormattedAmount(round(amount)) + ChatColor.GREEN + " belastet!");
         }
 
@@ -189,7 +187,8 @@ public class MoneyCommands {
                 throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
             }
 
-            plugin.set(target, amount);
+            String detail = context.getJoinedStrings(2);
+            plugin.set(target, amount, BalanceSource.ADMIN_COMMAND, detail);
             sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde auf " + plugin.getFormattedAmount(round(amount)) + ChatColor.GREEN + " gesetzt!");
         }
         private double round(double d) {

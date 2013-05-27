@@ -4,15 +4,19 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.api.economy.BalanceSource;
+import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rceconomy.commands.MoneyCommands;
+import de.raidcraft.rceconomy.listener.BalanceListener;
 import de.raidcraft.rceconomy.listener.PlayerListener;
 import de.raidcraft.rceconomy.tables.BalanceTable;
+import de.raidcraft.rceconomy.tables.FlowTable;
 import de.raidcraft.util.CustomItemUtil;
 
 /**
  * @author Philip Urban
  */
-public class RCEconomyPlugin extends BasePlugin {
+public class RCEconomyPlugin extends BasePlugin implements Economy {
 
     private LocalConfiguration config;
 
@@ -20,9 +24,11 @@ public class RCEconomyPlugin extends BasePlugin {
     public void enable() {
 
         registerTable(BalanceTable.class, new BalanceTable());
+        registerTable(FlowTable.class, new FlowTable());
         registerCommands(MoneyCommands.class);
         registerEvents(new PlayerListener());
-
+        registerEvents(new BalanceListener());
+        RaidCraft.setupEconomy(this);
         reload();
     }
 
@@ -40,7 +46,7 @@ public class RCEconomyPlugin extends BasePlugin {
     public class LocalConfiguration extends ConfigurationBase<RCEconomyPlugin> {
 
         @Setting("initial-amount")
-        public double initialAmount = 10.0;
+        public double initialAmount = 0.0;
         @Setting("currency-name-singular")
         public String currencySingular = "Coin";
         @Setting("currency-name-plural")
@@ -52,6 +58,7 @@ public class RCEconomyPlugin extends BasePlugin {
         }
     }
 
+    @Override
     public void createAccount(String accountName) {
 
         RaidCraft.getTable(BalanceTable.class).createAccount(accountName);
@@ -95,11 +102,25 @@ public class RCEconomyPlugin extends BasePlugin {
 
     public void modify(String accountName, double amount) {
 
+        FlowManager.addActivity(accountName, amount, BalanceSource.PLUGIN, null);
+        RaidCraft.getTable(BalanceTable.class).modify(accountName, amount);
+    }
+
+    public void modify(String accountName, double amount, BalanceSource source, String detail) {
+
+        FlowManager.addActivity(accountName, amount, source, detail);
         RaidCraft.getTable(BalanceTable.class).modify(accountName, amount);
     }
 
     public void set(String accountName, double amount) {
 
+        FlowManager.addActivity(accountName, amount, BalanceSource.PLUGIN, null);
+        RaidCraft.getTable(BalanceTable.class).set(accountName, amount);
+    }
+
+    public void set(String accountName, double amount, BalanceSource source, String detail) {
+
+        FlowManager.addActivity(accountName, amount, source, detail);
         RaidCraft.getTable(BalanceTable.class).set(accountName, amount);
     }
 
