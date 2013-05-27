@@ -157,7 +157,10 @@ public class MoneyCommands {
                 throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
             }
 
-            String detail = context.getJoinedStrings(2);
+            String detail = null;
+            if(context.argsLength() > 2) {
+                detail = context.getJoinedStrings(2);
+            }
             plugin.modify(target, amount, BalanceSource.ADMIN_COMMAND, detail);
             sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + plugin.getFormattedAmount(round(amount)) + ChatColor.GREEN + " begünstigt!");
         }
@@ -181,7 +184,10 @@ public class MoneyCommands {
                 throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
             }
 
-            String detail = context.getJoinedStrings(2);
+            String detail = null;
+            if(context.argsLength() > 2) {
+                detail = context.getJoinedStrings(2);
+            }
             plugin.modify(target, -amount, BalanceSource.ADMIN_COMMAND, detail);
             sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + plugin.getFormattedAmount(round(amount)) + ChatColor.GREEN + " belastet!");
         }
@@ -201,7 +207,10 @@ public class MoneyCommands {
                 throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
             }
 
-            String detail = context.getJoinedStrings(2);
+            String detail = null;
+            if(context.argsLength() > 2) {
+                detail = context.getJoinedStrings(2);
+            }
             plugin.set(target, amount, BalanceSource.ADMIN_COMMAND, detail);
             sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde auf " + plugin.getFormattedAmount(round(amount)) + ChatColor.GREEN + " gesetzt!");
         }
