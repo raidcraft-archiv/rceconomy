@@ -21,4 +21,14 @@ public class BalanceTable extends Table {
 
         //TODO implement
     }
+
+    public void set(String accountName, double amount) {
+
+        //TODO implement
+    }
+
+    public double getBalance(String accountName) {
+
+        //TODO implement
+    }
 }
