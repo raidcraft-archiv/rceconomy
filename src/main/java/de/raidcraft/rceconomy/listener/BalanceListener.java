@@ -27,7 +27,7 @@ public class BalanceListener implements Listener {
         player.sendMessage(ChatColor.GREEN + "Kontobewegung: " + plugin.getFormattedAmount(event.getAmount())
                 + ChatColor.GREEN + " Grund: " + ChatColor.YELLOW + event.getSource().getFriendlyName());
         if(event.getDetail() != null && event.getDetail().length() > 0) {
-            player.sendMessage(ChatColor.GREEN + "Detail: " + ChatColor.WHITE + event.getDetail());
+            player.sendMessage(ChatColor.GREEN + "Details: " + ChatColor.WHITE + event.getDetail());
         }
     }
 }
