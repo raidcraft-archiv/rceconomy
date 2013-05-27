@@ -4,8 +4,10 @@ import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
 import de.raidcraft.util.CustomItemUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  * Author: Philip
@@ -79,9 +81,18 @@ public class MoneyCommands {
                 throw new CommandException("Du kannst nicht an dich selbst überweisen!");
             }
 
+            String targetFriendlyName = target;
+            Player targetPlayer = Bukkit.getPlayer(target);
+            String amountName = CustomItemUtil.getSellPriceString(round(amount));
+
+            if(targetPlayer != null) {
+                targetFriendlyName = targetPlayer.getName();
+                targetPlayer.sendMessage(ChatColor.YELLOW + sender.getName() + ChatColor.GREEN + " hat dir " + amountName + ChatColor.GREEN + " überwiesen!");
+            }
+
             plugin.modify(sender.getName(), -amount);
             plugin.modify(target, amount);
-            sender.sendMessage(ChatColor.GREEN + "Du hast '" + ChatColor.YELLOW + target + ChatColor.GREEN + "' " + CustomItemUtil.getSellPriceString(round(amount)) + ChatColor.GREEN + " überwiesen!");
+            sender.sendMessage(ChatColor.GREEN + "Du hast '" + ChatColor.YELLOW + targetFriendlyName + ChatColor.GREEN + "' " + amountName + ChatColor.GREEN + " überwiesen!");
         }
 
         @Command(
