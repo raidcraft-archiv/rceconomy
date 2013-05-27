@@ -32,6 +32,24 @@ public class BalanceTable extends Table {
         }
     }
 
+    public boolean exists(String accountName) {
+
+        accountName = accountName.toLowerCase();
+        try {
+            ResultSet resultSet = executeQuery(
+                    "SELECT * FROM " + getTableName() + " WHERE name = '" + accountName + "';");
+
+            while (resultSet.next()) {
+                resultSet.close();
+                return true;
+            }
+            resultSet.close();
+        } catch (SQLException e) {
+            RaidCraft.LOGGER.warning(e.getMessage());
+        }
+        return false;
+    }
+
     public void modify(String accountName, double amount) {
 
         double newBalance = getBalance(accountName) + amount;
@@ -71,6 +89,11 @@ public class BalanceTable extends Table {
                 return balance;
             }
             resultSet.close();
+            executeUpdate("INSERT INTO " + getTableName() + " (name, balance) " +
+                    "VALUES (" +
+                    "'" + accountName + "'" + "," +
+                    "'" + 0 + "'" +
+                    ");");
         } catch (SQLException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
         }

@@ -5,6 +5,7 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.rceconomy.commands.MoneyCommands;
+import de.raidcraft.rceconomy.listener.PlayerListener;
 import de.raidcraft.rceconomy.tables.BalanceTable;
 import de.raidcraft.util.CustomItemUtil;
 
@@ -13,13 +14,14 @@ import de.raidcraft.util.CustomItemUtil;
  */
 public class RCEconomyPlugin extends BasePlugin {
 
-    LocalConfiguration config;
+    private LocalConfiguration config;
 
     @Override
     public void enable() {
 
         registerTable(BalanceTable.class, new BalanceTable());
         registerCommands(MoneyCommands.class);
+        registerEvents(new PlayerListener());
 
         reload();
     }
@@ -56,6 +58,11 @@ public class RCEconomyPlugin extends BasePlugin {
         RaidCraft.getTable(BalanceTable.class).deleteAccount(accountName);
     }
 
+    public boolean accountExists(String accountName) {
+
+        return RaidCraft.getTable(BalanceTable.class).exists(accountName);
+    }
+
     public double getBalance(String accountName) {
 
         return RaidCraft.getTable(BalanceTable.class).getBalance(accountName);
@@ -79,5 +86,10 @@ public class RCEconomyPlugin extends BasePlugin {
     public void modify(String accountName, double amount) {
 
         RaidCraft.getTable(BalanceTable.class).modify(accountName, amount);
+    }
+
+    public void set(String accountName, double amount) {
+
+        RaidCraft.getTable(BalanceTable.class).set(accountName, amount);
     }
 }

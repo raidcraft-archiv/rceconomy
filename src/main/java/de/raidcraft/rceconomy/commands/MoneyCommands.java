@@ -3,6 +3,7 @@ package de.raidcraft.rceconomy.commands;
 import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -58,7 +59,20 @@ public class MoneyCommands {
         @CommandPermissions("rceconomy.use")
         public void pay(CommandContext context, CommandSender sender) throws CommandException {
 
-            //TODO implement
+            String target = context.getString(0).toLowerCase();
+            double amount = context.getDouble(1);
+
+            if(amount < 0) {
+                throw new CommandException("Der Betrag muss positiv sein!");
+            }
+
+            if(!plugin.accountExists(target)) {
+                throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
+            }
+
+            plugin.modify(sender.getName(), -amount);
+            plugin.modify(target, amount);
+            sender.sendMessage(ChatColor.GREEN + "Du hast '" + target + "' " + CustomItemUtil.getSellPriceString(amount) + ChatColor.GREEN + " überwiesen!");
         }
 
         @Command(
@@ -78,7 +92,19 @@ public class MoneyCommands {
          @CommandPermissions("rceconomy.admin")
          public void give(CommandContext context, CommandSender sender) throws CommandException {
 
-            //TODO implement
+            String target = context.getString(0).toLowerCase();
+            double amount = context.getDouble(1);
+
+            if(amount < 0) {
+                throw new CommandException("Der Betrag muss positiv sein!");
+            }
+
+            if(!plugin.accountExists(target)) {
+                throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
+            }
+
+            plugin.modify(target, amount);
+            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + CustomItemUtil.getSellPriceString(amount) + ChatColor.GREEN + " begünstigt!");
         }
 
         @Command(
@@ -88,17 +114,38 @@ public class MoneyCommands {
         @CommandPermissions("rceconomy.admin")
         public void take(CommandContext context, CommandSender sender) throws CommandException {
 
-            //TODO implement
+            String target = context.getString(0).toLowerCase();
+            double amount = context.getDouble(1);
+
+            if(amount < 0) {
+                throw new CommandException("Der Betrag muss positiv sein!");
+            }
+
+            if(!plugin.accountExists(target)) {
+                throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
+            }
+
+            plugin.modify(target, -amount);
+            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + CustomItemUtil.getSellPriceString(amount) + ChatColor.GREEN + " belastet!");
         }
 
         @Command(
                 aliases = {"set"},
-                desc = "Take"
+                desc = "Take",
+                min = 2
         )
         @CommandPermissions("rceconomy.admin")
         public void set(CommandContext context, CommandSender sender) throws CommandException {
 
-            //TODO implement
+            String target = context.getString(0).toLowerCase();
+            double amount = context.getDouble(1);
+
+            if(!plugin.accountExists(target)) {
+                throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
+            }
+
+            plugin.set(target, amount);
+            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde auf " + CustomItemUtil.getSellPriceString(amount) + ChatColor.GREEN + " gesetzt!");
         }
     }
 }
