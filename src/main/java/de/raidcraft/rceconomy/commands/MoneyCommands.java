@@ -33,6 +33,9 @@ public class MoneyCommands {
         String target = sender.getName();
         if(context.hasFlag('p')) {
             target = context.getFlag('p');
+            if(!plugin.accountExists(target)) {
+                throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
+            }
         }
         double balance = plugin.getBalance(target);
         sender.sendMessage(ChatColor.GREEN + "Kontostand von '" + ChatColor.YELLOW + target + ChatColor.GREEN + "': " + plugin.getFormattedAmount(balance));
