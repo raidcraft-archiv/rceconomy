@@ -3,10 +3,14 @@ package de.raidcraft.rceconomy.commands;
 import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
+import de.raidcraft.rceconomy.BankActivity;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
+import de.raidcraft.rceconomy.tables.FlowTable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 /**
  * Author: Philip
@@ -24,15 +28,14 @@ public class MoneyCommands {
 
     @Command(
             aliases = {"money", "coins", "geld"},
-            desc = "Main money command",
-            flags = "p:"
+            desc = "Main money command"
     )
     @NestedCommand(value = NestedLootCommands.class, executeBody = true)
     public void money(CommandContext context, CommandSender sender) throws CommandException {
 
         String target = sender.getName();
         double balance = plugin.getBalance(target);
-        sender.sendMessage(ChatColor.GREEN + "Kontostand von '" + ChatColor.YELLOW + target + ChatColor.GREEN + "': " + plugin.getFormattedAmount(balance));
+        sender.sendMessage(ChatColor.GREEN + "Dein Kontostand: " + plugin.getFormattedAmount(balance));
     }
 
     public static class NestedLootCommands {
@@ -73,8 +76,14 @@ public class MoneyCommands {
                 }
             }
 
+            int number = 10;
+            if(context.argsLength() > 1) {
+                number = context.getInteger(1);
+            }
+
             double balance = plugin.getBalance(target);
-            sender.sendMessage(ChatColor.GREEN + "Kontostand von '" + ChatColor.YELLOW + target + ChatColor.GREEN + "': " + plugin.getFormattedAmount(balance));
+            sender.sendMessage(ChatColor.YELLOW + target + "s" + ChatColor.GREEN + " Kontostand: " + plugin.getFormattedAmount(balance));
+            showFlow(sender, target, number);
         }
 
         @Command(
@@ -121,7 +130,12 @@ public class MoneyCommands {
         @CommandPermissions("rceconomy.use")
         public void flow(CommandContext context, CommandSender sender) throws CommandException {
 
-            //TODO implement
+            int number = 10;
+            if(context.argsLength() > 0) {
+                number = context.getInteger(0);
+            }
+
+            showFlow(sender, sender.getName(), number);
         }
 
         @Command(
@@ -195,6 +209,23 @@ public class MoneyCommands {
 
             return Math.round(d*100)/100.0;
         }
-    }
 
+        private void showFlow(CommandSender sender, String target, int number) {
+
+            List<BankActivity> activities = RaidCraft.getTable(FlowTable.class).getActivity(target, number);
+
+            sender.sendMessage(ChatColor.GREEN + "Die letzten Kontobewegungen von " + ChatColor.YELLOW + target + ChatColor.GREEN + ":");
+            ChatColor amountColor;
+            for(BankActivity activity : activities) {
+                if(activity.getAmount() > 0) {
+                    amountColor = ChatColor.GREEN;
+                }
+                else {
+                    amountColor = ChatColor.RED;
+                }
+                sender.sendMessage(amountColor + String.valueOf(activity.getAmount()) + ChatColor.YELLOW + " "
+                        + activity.getSource().getFriendlyName() + ChatColor.YELLOW + " " + activity.getDate());
+            }
+        }
+    }
 }
