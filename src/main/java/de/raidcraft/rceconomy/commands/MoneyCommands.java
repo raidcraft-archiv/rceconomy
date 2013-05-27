@@ -75,6 +75,10 @@ public class MoneyCommands {
                 throw new CommandException("Du hast nicht genügend Coins auf deinem Konto!");
             }
 
+            if(sender.getName().equalsIgnoreCase(target)) {
+                throw new CommandException("Du kannst nicht an dich selbst überweisen!");
+            }
+
             plugin.modify(sender.getName(), -amount);
             plugin.modify(target, amount);
             sender.sendMessage(ChatColor.GREEN + "Du hast '" + ChatColor.YELLOW + target + ChatColor.GREEN + "' " + CustomItemUtil.getSellPriceString(round(amount)) + ChatColor.GREEN + " überwiesen!");
