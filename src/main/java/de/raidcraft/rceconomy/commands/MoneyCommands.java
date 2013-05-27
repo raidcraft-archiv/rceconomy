@@ -216,6 +216,7 @@ public class MoneyCommands {
 
             sender.sendMessage(ChatColor.GREEN + "Die letzten Kontobewegungen von " + ChatColor.YELLOW + target + ChatColor.GREEN + ":");
             ChatColor amountColor;
+            String detail;
             for(BankActivity activity : activities) {
                 if(activity.getAmount() > 0) {
                     amountColor = ChatColor.GREEN;
@@ -223,8 +224,14 @@ public class MoneyCommands {
                 else {
                     amountColor = ChatColor.RED;
                 }
-                sender.sendMessage(amountColor + String.valueOf(activity.getAmount()) + ChatColor.YELLOW + " "
-                        + activity.getSource().getFriendlyName() + ChatColor.YELLOW + " " + activity.getDate());
+                if(activity.getDetail() != null && activity.getDetail().length() > 0) {
+                    detail = activity.getDetail();
+                }
+                else {
+                    detail = "";
+                }
+                sender.sendMessage(amountColor + String.valueOf(activity.getAmount()) + ChatColor.WHITE + " "
+                        + activity.getSource().getFriendlyName() + ChatColor.YELLOW + " " + activity.getDate() + ChatColor.WHITE + " " + detail);
             }
         }
     }
