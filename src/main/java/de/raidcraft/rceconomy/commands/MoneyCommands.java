@@ -29,7 +29,8 @@ public class MoneyCommands {
     @NestedCommand(value = NestedLootCommands.class, executeBody = true)
     public void money(CommandContext context, CommandSender sender) throws CommandException {
 
-        //TODO implement
+        double balance = plugin.getBalance(sender.getName());
+        sender.sendMessage(ChatColor.GREEN + "Kontostand: " + CustomItemUtil.getSellPriceString(balance));
     }
 
     public static class NestedLootCommands {
@@ -68,6 +69,10 @@ public class MoneyCommands {
 
             if(!plugin.accountExists(target)) {
                 throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
+            }
+
+            if(!plugin.hasEnough(sender.getName(), amount)) {
+                throw new CommandException("Du hast nicht genügend Coins auf deinem Konto!");
             }
 
             plugin.modify(sender.getName(), -amount);
