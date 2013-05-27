@@ -31,12 +31,6 @@ public class MoneyCommands {
     public void money(CommandContext context, CommandSender sender) throws CommandException {
 
         String target = sender.getName();
-        if(context.hasFlag('p')) {
-            target = context.getFlag('p');
-            if(!plugin.accountExists(target)) {
-                throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
-            }
-        }
         double balance = plugin.getBalance(target);
         sender.sendMessage(ChatColor.GREEN + "Kontostand von '" + ChatColor.YELLOW + target + ChatColor.GREEN + "': " + plugin.getFormattedAmount(balance));
     }
@@ -59,6 +53,28 @@ public class MoneyCommands {
 
             RaidCraft.getComponent(RCEconomyPlugin.class).reload();
             sender.sendMessage(ChatColor.GREEN + "RCEconomy wurde neugeladen!");
+        }
+
+        @Command(
+                aliases = {"info", "player", "p"},
+                desc = "Info"
+        )
+        @CommandPermissions("rceconomy.use")
+        public void info(CommandContext context, CommandSender sender) throws CommandException {
+
+            String target = sender.getName();
+            if(context.argsLength() > 0) {
+                if(!sender.hasPermission("rceconomy.admin")) {
+                    throw new CommandException("Du hast keine Rechte dir Fremde Kontostände anzuzeigen!");
+                }
+                target = context.getString(0);
+                if(!plugin.accountExists(target)) {
+                    throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
+                }
+            }
+
+            double balance = plugin.getBalance(target);
+            sender.sendMessage(ChatColor.GREEN + "Kontostand von '" + ChatColor.YELLOW + target + ChatColor.GREEN + "': " + plugin.getFormattedAmount(balance));
         }
 
         @Command(
