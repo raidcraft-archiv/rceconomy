@@ -63,13 +63,8 @@ public class BalanceTable extends Table {
 
     public void set(String accountName, double amount) {
 
-        deleteAccount(accountName);
         try {
-            executeUpdate("INSERT INTO " + getTableName() + " (name, balance) " +
-                    "VALUES (" +
-                    "'" + accountName.toLowerCase() + "'" + "," +
-                    "'" + amount + "'" +
-                    ");");
+            executeUpdate("UPDATE " + getTableName() + " SET balance = '" + amount + "' WHERE name = '" + accountName + "'");
         } catch (SQLException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
             e.printStackTrace();
