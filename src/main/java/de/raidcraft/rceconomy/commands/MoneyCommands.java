@@ -3,7 +3,6 @@ package de.raidcraft.rceconomy.commands;
 import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
-import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -26,13 +25,17 @@ public class MoneyCommands {
     @Command(
             aliases = {"money", "coins", "geld"},
             desc = "Main money command",
-            flags = "p"
+            flags = "p:"
     )
     @NestedCommand(value = NestedLootCommands.class, executeBody = true)
     public void money(CommandContext context, CommandSender sender) throws CommandException {
 
-        double balance = plugin.getBalance(sender.getName());
-        sender.sendMessage(ChatColor.GREEN + "Kontostand: " + CustomItemUtil.getSellPriceString(balance));
+        String target = sender.getName();
+        if(context.hasFlag('p')) {
+            target = context.getFlag('p');
+        }
+        double balance = plugin.getBalance(target);
+        sender.sendMessage(ChatColor.GREEN + "Kontostand von '" + ChatColor.YELLOW + target + ChatColor.GREEN + "': " + plugin.getFormattedAmount(balance));
     }
 
     public static class NestedLootCommands {
@@ -57,7 +60,8 @@ public class MoneyCommands {
 
         @Command(
                 aliases = {"pay"},
-                desc = "Pay"
+                desc = "Pay",
+                min = 2
         )
         @CommandPermissions("rceconomy.use")
         public void pay(CommandContext context, CommandSender sender) throws CommandException {
@@ -83,7 +87,7 @@ public class MoneyCommands {
 
             String targetFriendlyName = target;
             Player targetPlayer = Bukkit.getPlayer(target);
-            String amountName = CustomItemUtil.getSellPriceString(round(amount));
+            String amountName = plugin.getFormattedAmount(round(amount));
 
             if(targetPlayer != null) {
                 targetFriendlyName = targetPlayer.getName();
@@ -107,7 +111,8 @@ public class MoneyCommands {
 
         @Command(
                 aliases = {"give"},
-                desc = "Give"
+                desc = "Give",
+                min = 2
         )
          @CommandPermissions("rceconomy.admin")
          public void give(CommandContext context, CommandSender sender) throws CommandException {
@@ -124,12 +129,13 @@ public class MoneyCommands {
             }
 
             plugin.modify(target, amount);
-            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + CustomItemUtil.getSellPriceString(round(amount)) + ChatColor.GREEN + " begünstigt!");
+            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + plugin.getFormattedAmount(round(amount)) + ChatColor.GREEN + " begünstigt!");
         }
 
         @Command(
                 aliases = {"take"},
-                desc = "Take"
+                desc = "Take",
+                min = 2
         )
         @CommandPermissions("rceconomy.admin")
         public void take(CommandContext context, CommandSender sender) throws CommandException {
@@ -146,7 +152,7 @@ public class MoneyCommands {
             }
 
             plugin.modify(target, -amount);
-            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + CustomItemUtil.getSellPriceString(round(amount)) + ChatColor.GREEN + " belastet!");
+            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + plugin.getFormattedAmount(round(amount)) + ChatColor.GREEN + " belastet!");
         }
 
         @Command(
@@ -165,7 +171,7 @@ public class MoneyCommands {
             }
 
             plugin.set(target, amount);
-            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde auf " + CustomItemUtil.getSellPriceString(round(amount)) + ChatColor.GREEN + " gesetzt!");
+            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde auf " + plugin.getFormattedAmount(round(amount)) + ChatColor.GREEN + " gesetzt!");
         }
         private double round(double d) {
 
