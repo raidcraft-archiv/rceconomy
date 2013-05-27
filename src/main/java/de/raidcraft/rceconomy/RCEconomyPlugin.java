@@ -1,10 +1,12 @@
 package de.raidcraft.rceconomy;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.rceconomy.commands.MoneyCommands;
 import de.raidcraft.rceconomy.tables.BalanceTable;
+import de.raidcraft.util.CustomItemUtil;
 
 /**
  * @author Philip Urban
@@ -46,36 +48,36 @@ public class RCEconomyPlugin extends BasePlugin {
 
     public void createAccount(String accountName) {
 
-        //TODO implement
+        RaidCraft.getTable(BalanceTable.class).set(accountName, config.initialAmount);
     }
 
     private void deleteAccount(String accountName) {
 
-        //TODO implement
+        RaidCraft.getTable(BalanceTable.class).deleteAccount(accountName);
     }
 
     public double getBalance(String accountName) {
 
-        //TODO implement
+        return RaidCraft.getTable(BalanceTable.class).getBalance(accountName);
     }
 
     public String getFormattedBalance(String accountName) {
 
-        //TODO implement
+        double balance = RaidCraft.getTable(BalanceTable.class).getBalance(accountName);
+        return CustomItemUtil.getSellPriceString(balance);
     }
 
     public boolean hasEnough(String accountName, double amount) {
 
-        //TODO implement
+        double balance = RaidCraft.getTable(BalanceTable.class).getBalance(accountName);
+        if(balance >= amount) {
+            return true;
+        }
+        return false;
     }
 
-    public void withdraw(String accountName, double amount) {
+    public void modify(String accountName, double amount) {
 
-        //TODO implement
-    }
-
-    public void deposit(String accountName, double amount) {
-
-        //TODO implement
+        RaidCraft.getTable(BalanceTable.class).modify(accountName, amount);
     }
 }
