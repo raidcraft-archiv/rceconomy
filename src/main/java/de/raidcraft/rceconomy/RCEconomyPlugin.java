@@ -41,6 +41,10 @@ public class RCEconomyPlugin extends BasePlugin {
 
         @Setting("initial-amount")
         public double initialAmount = 10.0;
+        @Setting("currency-name-singular")
+        public String currencySingular = "Coin";
+        @Setting("currency-name-plural")
+        public String currencyPlural = "Coins";
 
         public LocalConfiguration(RCEconomyPlugin plugin) {
 
@@ -97,5 +101,15 @@ public class RCEconomyPlugin extends BasePlugin {
     public void set(String accountName, double amount) {
 
         RaidCraft.getTable(BalanceTable.class).set(accountName, amount);
+    }
+
+    public String getCurrencyNameSingular() {
+
+        return config.currencySingular;
+    }
+
+    public String getCurrencyNamePlural() {
+
+        return config.currencyPlural;
     }
 }
