@@ -95,11 +95,13 @@ public class MoneyCommands {
         public void pay(CommandContext context, CommandSender sender) throws CommandException {
 
             String target = context.getString(0).toLowerCase();
-            double amount = context.getDouble(1)/100;
+            double amount = context.getDouble(1);
 
             if(amount < 1) {
                 throw new CommandException("Der Betrag muss positiv und mindestens 1 sein!");
             }
+
+            amount /= 100;
 
             if(!plugin.accountExists(target)) {
                 throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
