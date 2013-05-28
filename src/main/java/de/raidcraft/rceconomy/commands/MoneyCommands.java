@@ -95,10 +95,10 @@ public class MoneyCommands {
         public void pay(CommandContext context, CommandSender sender) throws CommandException {
 
             String target = context.getString(0).toLowerCase();
-            double amount = context.getDouble(1);
+            double amount = context.getDouble(1)/100;
 
-            if(amount < 0) {
-                throw new CommandException("Der Betrag muss positiv sein!");
+            if(amount < 1) {
+                throw new CommandException("Der Betrag muss positiv und mindestens 1 sein!");
             }
 
             if(!plugin.accountExists(target)) {
@@ -147,7 +147,7 @@ public class MoneyCommands {
          public void give(CommandContext context, CommandSender sender) throws CommandException {
 
             String target = context.getString(0).toLowerCase();
-            double amount = context.getDouble(1);
+            double amount = context.getDouble(1)/100;
 
             if(amount < 0) {
                 throw new CommandException("Der Betrag muss positiv sein!");
@@ -174,7 +174,7 @@ public class MoneyCommands {
         public void take(CommandContext context, CommandSender sender) throws CommandException {
 
             String target = context.getString(0).toLowerCase();
-            double amount = context.getDouble(1);
+            double amount = context.getDouble(1)/100;
 
             if(amount < 0) {
                 throw new CommandException("Der Betrag muss positiv sein!");
@@ -201,7 +201,7 @@ public class MoneyCommands {
         public void set(CommandContext context, CommandSender sender) throws CommandException {
 
             String target = context.getString(0).toLowerCase();
-            double amount = context.getDouble(1);
+            double amount = context.getDouble(1)/100;
 
             if(!plugin.accountExists(target)) {
                 throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
