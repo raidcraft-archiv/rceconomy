@@ -123,14 +123,14 @@ public class RCEconomyPlugin extends BasePlugin implements Economy {
 
     public void modify(String accountName, double amount) {
 
-        if(amount == 0) return;
+        if(amount == 0.0) return;
         FlowManager.addActivity(accountName, amount, BalanceSource.PLUGIN, null);
         RaidCraft.getTable(BalanceTable.class).modify(accountName, amount);
     }
 
     public void modify(String accountName, double amount, BalanceSource source, String detail) {
 
-        if(amount == 0) return;
+        if(amount == 0.0) return;
         FlowManager.addActivity(accountName, amount, source, detail);
         RaidCraft.getTable(BalanceTable.class).modify(accountName, amount);
     }

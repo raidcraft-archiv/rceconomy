@@ -39,7 +39,7 @@ public class BalanceTable extends Table {
             ResultSet resultSet = executeQuery(
                     "SELECT * FROM " + getTableName() + " WHERE name = '" + accountName + "';");
 
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 resultSet.close();
                 return true;
             }
@@ -78,7 +78,7 @@ public class BalanceTable extends Table {
             ResultSet resultSet = executeQuery(
                     "SELECT * FROM " + getTableName() + " WHERE name = '" + accountName + "';");
 
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 double balance = resultSet.getDouble("balance");
                 resultSet.close();
                 return balance;
