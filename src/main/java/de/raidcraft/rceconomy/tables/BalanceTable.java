@@ -24,7 +24,7 @@ public class BalanceTable extends Table {
                     "CREATE TABLE `" + getTableName() + "` (" +
                             "`id` INT NOT NULL AUTO_INCREMENT, " +
                             "`name` VARCHAR( 64 ) NOT NULL, " +
-                            "`balance` DOUBLE( 64,2 ) NOT NULL, " +
+                            "`balance` DOUBLE( 64,10 ) NOT NULL, " +
                             "PRIMARY KEY ( `id` )" +
                             ")");
         } catch (SQLException e) {
