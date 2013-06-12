@@ -100,16 +100,37 @@ public class RCEconomyPlugin extends BasePlugin implements Economy {
     public boolean hasEnough(String accountName, double amount) {
 
         double balance = RaidCraft.getTable(BalanceTable.class).getBalance(accountName);
-        if(balance >= amount) {
-            return true;
-        }
-        return false;
+        return balance >= amount;
+    }
+
+    @Override
+    public void substract(String accountName, double amount) {
+
+        modify(accountName, -amount);
+    }
+
+    @Override
+    public void substract(String accountName, double amount, BalanceSource source, String detail) {
+
+        modify(accountName, -amount, source, detail);
+    }
+
+    @Override
+    public void add(String accountName, double amount) {
+
+        modify(accountName, amount);
+    }
+
+    @Override
+    public void add(String accountName, double amount, BalanceSource source, String detail) {
+
+        modify(accountName, amount, source, detail);
     }
 
     @Override
     public void modify(String accountName, double amount) {
 
-        if(amount == 0) return;
+        if(amount == 0.0) return;
         FlowManager.addActivity(accountName, amount, BalanceSource.PLUGIN, null);
         RaidCraft.getTable(BalanceTable.class).modify(accountName, amount);
     }
@@ -117,7 +138,7 @@ public class RCEconomyPlugin extends BasePlugin implements Economy {
     @Override
     public void modify(String accountName, double amount, BalanceSource source, String detail) {
 
-        if(amount == 0) return;
+        if(amount == 0.0) return;
         FlowManager.addActivity(accountName, amount, source, detail);
         RaidCraft.getTable(BalanceTable.class).modify(accountName, amount);
     }
@@ -149,7 +170,6 @@ public class RCEconomyPlugin extends BasePlugin implements Economy {
     @Override
     public void set(String accountName, double amount) {
 
-        if(amount == 0) return;
         FlowManager.addActivity(accountName, amount, BalanceSource.PLUGIN, null);
         RaidCraft.getTable(BalanceTable.class).set(accountName, amount);
     }
@@ -157,7 +177,6 @@ public class RCEconomyPlugin extends BasePlugin implements Economy {
     @Override
     public void set(String accountName, double amount, BalanceSource source, String detail) {
 
-        if(amount == 0) return;
         FlowManager.addActivity(accountName, amount, source, detail);
         RaidCraft.getTable(BalanceTable.class).set(accountName, amount);
     }

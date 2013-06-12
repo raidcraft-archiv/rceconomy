@@ -18,7 +18,7 @@ public class BalanceListener implements Listener {
     public void onBalanceChange(BalanceChangeEvent event) {
 
         Player player = Bukkit.getPlayer(event.getAccountName());
-        if(player == null) {
+        if(player == null || event.getAmount() == 0.0 || (int)(event.getAmount() * 100) == 0) {
             return;
         }
 
