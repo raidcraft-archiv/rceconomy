@@ -144,30 +144,6 @@ public class RCEconomyPlugin extends BasePlugin implements Economy {
     }
 
     @Override
-    public void substract(String accountName, double amount) {
-
-        modify(accountName, -Math.abs(amount));
-    }
-
-    @Override
-    public void substract(String accountName, double amount, BalanceSource source, String detail) {
-
-        modify(accountName, -Math.abs(amount), source, detail);
-    }
-
-    @Override
-    public void add(String accountName, double amount) {
-
-        modify(accountName, Math.abs(amount));
-    }
-
-    @Override
-    public void add(String accountName, double amount, BalanceSource source, String detail) {
-
-        modify(accountName, Math.abs(amount), source, detail);
-    }
-
-    @Override
     public void set(String accountName, double amount) {
 
         FlowManager.addActivity(accountName, amount, BalanceSource.PLUGIN, null);
