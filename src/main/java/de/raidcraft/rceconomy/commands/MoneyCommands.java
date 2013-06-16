@@ -1,6 +1,10 @@
 package de.raidcraft.rceconomy.commands;
 
-import com.sk89q.minecraft.util.commands.*;
+import com.sk89q.minecraft.util.commands.Command;
+import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
+import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.rceconomy.BankActivity;
@@ -95,24 +99,23 @@ public class MoneyCommands {
         public void pay(CommandContext context, CommandSender sender) throws CommandException {
 
             String target = context.getString(0).toLowerCase();
-            double amount = context.getDouble(1);
+            // lets parse the input for an amount
+            double amount = plugin.parseCurrencyInput(context.getJoinedStrings(1));
 
-            if(amount < 1) {
-                throw new CommandException("Der Betrag muss positiv und mindestens 1 sein!");
+            if(amount <= 0.0) {
+                throw new CommandException("Der Betrag muss positiv und mindestens 1 Kuper sein.");
             }
 
-            amount /= 100;
-
             if(!plugin.accountExists(target)) {
-                throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
+                throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
             }
 
             if(!plugin.hasEnough(sender.getName(), amount)) {
-                throw new CommandException("Du hast nicht genügend Coins auf deinem Konto!");
+                throw new CommandException("Du hast nicht genügend Geld auf deinem Konto!");
             }
 
             if(sender.getName().equalsIgnoreCase(target)) {
-                throw new CommandException("Du kannst nicht an dich selbst überweisen!");
+                throw new CommandException("Du kannst dir nicht selbst Geld überweisen.");
             }
 
             if(Bukkit.getPlayer(target) != null) {
@@ -149,14 +152,15 @@ public class MoneyCommands {
          public void give(CommandContext context, CommandSender sender) throws CommandException {
 
             String target = context.getString(0).toLowerCase();
-            double amount = context.getDouble(1)/100;
+            // lets parse the input for an amount
+            double amount = plugin.parseCurrencyInput(context.getJoinedStrings(1));
 
-            if(amount < 0) {
-                throw new CommandException("Der Betrag muss positiv sein!");
+            if(amount <= 0.0) {
+                throw new CommandException("Der Betrag muss positiv und mindestens 1 Kuper sein.");
             }
 
             if(!plugin.accountExists(target)) {
-                throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
+                throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
             }
 
             String detail = null;
@@ -176,14 +180,15 @@ public class MoneyCommands {
         public void take(CommandContext context, CommandSender sender) throws CommandException {
 
             String target = context.getString(0).toLowerCase();
-            double amount = context.getDouble(1)/100;
+            // lets parse the input for an amount
+            double amount = plugin.parseCurrencyInput(context.getJoinedStrings(1));
 
-            if(amount < 0) {
-                throw new CommandException("Der Betrag muss positiv sein!");
+            if(amount <= 0.0) {
+                throw new CommandException("Der Betrag muss positiv und mindestens 1 Kuper sein.");
             }
 
             if(!plugin.accountExists(target)) {
-                throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
+                throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
             }
 
             String detail = null;
@@ -203,10 +208,11 @@ public class MoneyCommands {
         public void set(CommandContext context, CommandSender sender) throws CommandException {
 
             String target = context.getString(0).toLowerCase();
-            double amount = context.getDouble(1)/100;
+            // lets parse the input for an amount
+            double amount = plugin.parseCurrencyInput(context.getJoinedStrings(1));
 
             if(!plugin.accountExists(target)) {
-                throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
+                throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
             }
 
             String detail = null;

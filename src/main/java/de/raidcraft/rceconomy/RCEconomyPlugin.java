@@ -12,12 +12,18 @@ import de.raidcraft.rceconomy.listener.PlayerListener;
 import de.raidcraft.rceconomy.tables.BalanceTable;
 import de.raidcraft.rceconomy.tables.FlowTable;
 import de.raidcraft.util.CustomItemUtil;
+import org.bukkit.ChatColor;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Philip Urban
  */
 public class RCEconomyPlugin extends BasePlugin implements Economy {
 
+    // group 2 = gold, group 4 = silver, group 6 = copper
+    private static final Pattern CURRENCY_PATTERN = Pattern.compile("^((\\d+)[gG])?\\s?((\\d+)[sS])?\\s?((\\d+)[cCkK])?$");
     private LocalConfiguration config;
 
     @Override
@@ -94,6 +100,31 @@ public class RCEconomyPlugin extends BasePlugin implements Economy {
     public String getFormattedAmount(double amount) {
 
         return CustomItemUtil.getSellPriceString(amount);
+    }
+
+    @Override
+    public double parseCurrencyInput(String input) {
+
+        // lets parse the string for the different money values
+        input = ChatColor.stripColor(input).replace("●", "");
+        Matcher matcher = CURRENCY_PATTERN.matcher(input);
+        double value = 0.0;
+        if (matcher.matches()) {
+            // lets grap the different groups and check for input
+            // group 2 = gold
+            // group 4 = silver
+            // group 6 = copper
+            if (matcher.group(2) != null) {
+                value += 100 * Integer.parseInt(matcher.group(2));
+            }
+            if (matcher.group(4) != null) {
+                value += Integer.parseInt(matcher.group(4));
+            }
+            if (matcher.group(6) != null) {
+                value += Integer.parseInt(matcher.group(6)) / 100.0;
+            }
+        }
+        return value;
     }
 
     @Override
