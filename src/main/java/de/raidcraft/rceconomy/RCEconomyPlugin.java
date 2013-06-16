@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public class RCEconomyPlugin extends BasePlugin implements Economy {
 
     // group 2 = gold, group 4 = silver, group 6 = copper
-    private static final Pattern CURRENCY_PATTERN = Pattern.compile("^((\\d+)[gG])?\\s?((\\d+)[sS])?\\s?((\\d+)[cCkK])?$");
+    private static final Pattern CURRENCY_PATTERN = Pattern.compile("^((\\d+)[gG])?\\s?((\\d+)[sS])?\\s?((\\d+)[cCkK]?)?$");
     private LocalConfiguration config;
 
     @Override
