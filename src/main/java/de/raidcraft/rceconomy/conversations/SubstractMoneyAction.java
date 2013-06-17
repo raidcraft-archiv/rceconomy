@@ -1,6 +1,7 @@
 package de.raidcraft.rceconomy.conversations;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rcconversations.api.action.*;
 import de.raidcraft.rcconversations.api.conversation.Conversation;
@@ -16,6 +17,7 @@ public class SubstractMoneyAction extends AbstractAction {
     public void run(Conversation conversation, ActionArgumentList args) throws ActionArgumentException {
 
         String stringAmount = args.getString("amount");
+        String reason = args.getString("reason", "Conversation");
         stringAmount = ParseString.INST.parse(conversation, stringAmount);
 
         double amount;
@@ -27,6 +29,6 @@ public class SubstractMoneyAction extends AbstractAction {
         }
 
         Economy economy = RaidCraft.getEconomy();
-        economy.substract(conversation.getPlayer().getName(), amount);
+        economy.substract(conversation.getPlayer().getName(), amount, BalanceSource.PLUGIN, reason);
     }
 }
