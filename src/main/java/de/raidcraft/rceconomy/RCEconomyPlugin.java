@@ -6,7 +6,10 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.economy.Economy;
+import de.raidcraft.rcconversations.actions.ActionManager;
 import de.raidcraft.rceconomy.commands.MoneyCommands;
+import de.raidcraft.rceconomy.conversations.HasEnoughMoneyAction;
+import de.raidcraft.rceconomy.conversations.SubstractMoneyAction;
 import de.raidcraft.rceconomy.listener.BalanceListener;
 import de.raidcraft.rceconomy.listener.PlayerListener;
 import de.raidcraft.rceconomy.tables.BalanceTable;
@@ -35,6 +38,10 @@ public class RCEconomyPlugin extends BasePlugin implements Economy {
         registerEvents(new PlayerListener());
         registerEvents(new BalanceListener());
         RaidCraft.setupEconomy(this);
+
+        ActionManager.registerAction(new HasEnoughMoneyAction());
+        ActionManager.registerAction(new SubstractMoneyAction());
+
         reload();
     }
 
