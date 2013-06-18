@@ -4,7 +4,9 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rcconversations.api.action.*;
 import de.raidcraft.rcconversations.api.conversation.Conversation;
+import de.raidcraft.rcconversations.util.MathHelper;
 import de.raidcraft.rcconversations.util.ParseString;
+import de.raidcraft.rcconversations.util.WrongFormulaException;
 
 /**
  * @author Philip Urban
@@ -19,12 +21,12 @@ public class HasEnoughMoneyAction extends AbstractAction {
         String failure = args.getString("onfailure", null);
         String stringAmount = args.getString("amount");
         stringAmount = ParseString.INST.parse(conversation, stringAmount);
-
         double amount;
+
         try {
-            amount = Double.parseDouble(stringAmount);
+            amount = MathHelper.solveDoubleFormula(stringAmount);
         }
-        catch(NumberFormatException e) {
+        catch(WrongFormulaException e) {
             throw new WrongArgumentValueException("Wrong argument value in action '" + getName() + "': Amount must be a number!");
         }
 
