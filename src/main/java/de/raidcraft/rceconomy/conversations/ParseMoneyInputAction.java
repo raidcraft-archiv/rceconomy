@@ -35,7 +35,6 @@ public class ParseMoneyInputAction extends AbstractAction {
     private void changeStage(Conversation conversation, String stage) {
 
         if (stage != null) {
-            conversation.abortActionExecution(true);
             conversation.setCurrentStage(stage);
             conversation.triggerCurrentStage();
         }

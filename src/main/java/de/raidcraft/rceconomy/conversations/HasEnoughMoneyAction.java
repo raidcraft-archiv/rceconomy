@@ -29,7 +29,6 @@ public class HasEnoughMoneyAction extends AbstractAction {
             amount = MathHelper.solveDoubleFormula(stringAmount);
         }
         catch(WrongFormulaException e) {
-            conversation.abortActionExecution(true);
             throw new WrongArgumentValueException("Wrong argument value in action '" + getName() + "': Amount '" + stringAmount + "' is not a double!");
         }
 
@@ -40,14 +39,12 @@ public class HasEnoughMoneyAction extends AbstractAction {
 
         if(economy.hasEnough(account, amount)) {
             if(success != null) {
-                conversation.abortActionExecution(true);
                 conversation.setCurrentStage(success);
                 conversation.triggerCurrentStage();
             }
         }
         else {
             if(failure != null) {
-                conversation.abortActionExecution(true);
                 conversation.setCurrentStage(failure);
                 conversation.triggerCurrentStage();
             }
