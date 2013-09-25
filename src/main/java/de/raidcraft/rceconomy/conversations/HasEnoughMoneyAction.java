@@ -19,6 +19,7 @@ public class HasEnoughMoneyAction extends AbstractAction {
 
         String success = args.getString("onsuccess", null);
         String failure = args.getString("onfailure", null);
+        String account = args.getString("account", conversation.getPlayer().getName());
         String stringAmount = args.getString("amount");
         stringAmount = ParseString.INST.parse(conversation, stringAmount);
         double amount;
@@ -35,7 +36,7 @@ public class HasEnoughMoneyAction extends AbstractAction {
         conversation.set("money", amount);
         conversation.set("money_formatted", economy.getFormattedAmount(amount));
 
-        if(economy.hasEnough(conversation.getPlayer().getName(), amount)) {
+        if(economy.hasEnough(account, amount)) {
             if(success != null) {
                 conversation.setCurrentStage(success);
                 conversation.triggerCurrentStage();
