@@ -29,7 +29,7 @@ public class HasEnoughMoneyAction extends AbstractAction {
             amount = MathHelper.solveDoubleFormula(stringAmount);
         }
         catch(WrongFormulaException e) {
-            throw new WrongArgumentValueException("Wrong argument value in action '" + getName() + "': Amount must be a number!");
+            throw new WrongArgumentValueException("Wrong argument value in action '" + getName() + "': Amount '" + stringAmount + "' is not a double!");
         }
 
         Economy economy = RaidCraft.getEconomy();
