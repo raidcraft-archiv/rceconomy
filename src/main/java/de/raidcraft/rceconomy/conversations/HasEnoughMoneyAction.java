@@ -20,6 +20,7 @@ public class HasEnoughMoneyAction extends AbstractAction {
         String success = args.getString("onsuccess", null);
         String failure = args.getString("onfailure", null);
         String account = args.getString("account", conversation.getPlayer().getName());
+        account = ParseString.INST.parse(conversation, account);
         String stringAmount = args.getString("amount");
         stringAmount = ParseString.INST.parse(conversation, stringAmount);
         double amount;
