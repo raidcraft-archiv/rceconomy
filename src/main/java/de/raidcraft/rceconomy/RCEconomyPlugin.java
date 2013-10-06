@@ -17,7 +17,9 @@ import de.raidcraft.rceconomy.tables.BalanceTable;
 import de.raidcraft.rceconomy.tables.FlowTable;
 import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -195,6 +197,25 @@ public class RCEconomyPlugin extends BasePlugin implements Economy {
 
         FlowManager.addActivity(accountName, amount, source, detail);
         RaidCraft.getTable(BalanceTable.class).set(accountName, amount);
+    }
+
+    @Override
+    public void printFlow(CommandSender sender, String accountName, int entries) {
+
+        List<BankActivity> activities = RaidCraft.getTable(FlowTable.class).getActivity(accountName, entries);
+
+        sender.sendMessage(ChatColor.GREEN + "Die letzten Kontobewegungen von " + ChatColor.YELLOW + accountName + ChatColor.GREEN + ":");
+        String detail;
+        for(BankActivity activity : activities) {
+            if(activity.getDetail() != null && activity.getDetail().length() > 0) {
+                detail = activity.getDetail();
+            }
+            else {
+                detail = "";
+            }
+            sender.sendMessage(getFormattedAmount(activity.getAmount()) + ChatColor.WHITE + " "
+                    + activity.getSource().getFriendlyName() + ChatColor.YELLOW + " " + activity.getDate() + ChatColor.WHITE + " " + detail);
+        }
     }
 
     public String getCurrencyNameSingular() {

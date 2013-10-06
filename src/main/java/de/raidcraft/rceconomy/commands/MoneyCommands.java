@@ -1,20 +1,12 @@
 package de.raidcraft.rceconomy.commands;
 
-import com.sk89q.minecraft.util.commands.Command;
-import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.minecraft.util.commands.CommandException;
-import com.sk89q.minecraft.util.commands.CommandPermissions;
-import com.sk89q.minecraft.util.commands.NestedCommand;
+import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
-import de.raidcraft.rceconomy.BankActivity;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
-import de.raidcraft.rceconomy.tables.FlowTable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-
-import java.util.List;
 
 /**
  * Author: Philip
@@ -87,7 +79,7 @@ public class MoneyCommands {
 
             double balance = plugin.getBalance(target);
             sender.sendMessage(ChatColor.YELLOW + target + "s" + ChatColor.GREEN + " Kontostand: " + plugin.getFormattedAmount(balance));
-            showFlow(sender, target, number);
+            plugin.printFlow(sender, target, number);
         }
 
         @Command(
@@ -140,7 +132,7 @@ public class MoneyCommands {
                 number = context.getInteger(0);
             }
 
-            showFlow(sender, sender.getName(), number);
+            plugin.printFlow(sender, sender.getName(), number);
         }
 
         @Command(
@@ -225,24 +217,6 @@ public class MoneyCommands {
         private double round(double d) {
 
             return Math.round(d*100)/100.0;
-        }
-
-        private void showFlow(CommandSender sender, String target, int number) {
-
-            List<BankActivity> activities = RaidCraft.getTable(FlowTable.class).getActivity(target, number);
-
-            sender.sendMessage(ChatColor.GREEN + "Die letzten Kontobewegungen von " + ChatColor.YELLOW + target + ChatColor.GREEN + ":");
-            String detail;
-            for(BankActivity activity : activities) {
-                if(activity.getDetail() != null && activity.getDetail().length() > 0) {
-                    detail = activity.getDetail();
-                }
-                else {
-                    detail = "";
-                }
-                sender.sendMessage(plugin.getFormattedAmount(activity.getAmount()) + ChatColor.WHITE + " "
-                        + activity.getSource().getFriendlyName() + ChatColor.YELLOW + " " + activity.getDate() + ChatColor.WHITE + " " + detail);
-            }
         }
     }
 }
