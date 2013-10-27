@@ -126,13 +126,13 @@ public class RCEconomyPlugin extends BasePlugin implements Economy {
             // group 4 = silver
             // group 6 = copper
             if (matcher.group(2) != null) {
-                value += 100 * Integer.parseInt(matcher.group(2));
+                value += 100. * Integer.parseInt(matcher.group(2));
             }
             if (matcher.group(4) != null) {
                 value += Integer.parseInt(matcher.group(4));
             }
             if (matcher.group(6) != null) {
-                value += Integer.parseInt(matcher.group(6)) / 100.0;
+                value += Integer.parseInt(matcher.group(6)) / 100.;
             }
         }
         return value;
