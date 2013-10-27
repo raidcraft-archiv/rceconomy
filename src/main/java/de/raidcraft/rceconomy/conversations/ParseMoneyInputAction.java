@@ -6,7 +6,6 @@ import de.raidcraft.rcconversations.api.action.ActionArgumentException;
 import de.raidcraft.rcconversations.api.action.ActionArgumentList;
 import de.raidcraft.rcconversations.api.action.ActionInformation;
 import de.raidcraft.rcconversations.api.conversation.Conversation;
-import de.raidcraft.rceconomy.RCEconomyPlugin;
 
 /**
  * @author Philip Urban
@@ -22,7 +21,7 @@ public class ParseMoneyInputAction extends AbstractAction {
         String success = args.getString("onsuccess", null);
         String failure = args.getString("onfailure", null);
 
-        double amount = RaidCraft.getComponent(RCEconomyPlugin.class).parseCurrencyInput(input);
+        double amount = RaidCraft.getEconomy().parseCurrencyInput(input);
         if(amount == 0) {
             changeStage(conversation, failure);
             return;
