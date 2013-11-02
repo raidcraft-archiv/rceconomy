@@ -95,7 +95,7 @@ public class MoneyCommands {
             double amount = plugin.parseCurrencyInput(context.getJoinedStrings(1));
 
             if(amount <= 0.0) {
-                throw new CommandException("Der Betrag muss positiv und mindestens 1 Kuper sein.");
+                throw new CommandException("Der Betrag muss positiv sein und mindestens 1 Kupfer betragen.");
             }
 
             if(!plugin.accountExists(target)) {
