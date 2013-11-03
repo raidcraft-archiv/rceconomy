@@ -31,7 +31,7 @@ public class HasEnoughMoneyAction extends AbstractAction {
         catch(WrongFormulaException e) {
             throw new WrongArgumentValueException("Wrong argument value in action '" + getName() + "': Amount '" + stringAmount + "' is not a double!");
         }
-//        RaidCraft.LOGGER.info("DEBUG: HAS_ENOUGH_MONEY amount: " + amount);
+        RaidCraft.LOGGER.info("DEBUG: HAS_ENOUGH_MONEY amount: " + amount + " | string amount: " + stringAmount);
         Economy economy = RaidCraft.getEconomy();
 
         conversation.set("money", amount);

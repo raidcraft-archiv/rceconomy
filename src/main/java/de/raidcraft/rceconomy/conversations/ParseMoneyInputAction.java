@@ -26,7 +26,7 @@ public class ParseMoneyInputAction extends AbstractAction {
             changeStage(conversation, failure);
             return;
         }
-//        RaidCraft.LOGGER.info("DEBUG: PARSE_MONEY_INPUT amount: " + amount);
+        RaidCraft.LOGGER.info("DEBUG: PARSE_MONEY_INPUT amount: " + amount);
         conversation.set(varName, amount);
         changeStage(conversation, success);
     }
