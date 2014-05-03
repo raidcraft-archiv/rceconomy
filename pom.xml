@@ -25,7 +25,7 @@
     <name>RCEconomy</name>
 
     <scm>
-        <developerConnection>scm:git:ssh://git@git.raid-craft.de:22109/rceconomy.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@git.raid-craft.de:22109/raid-craft-de/rceconomy.git</developerConnection>
     </scm>
 
     <parent>
