@@ -21,17 +21,11 @@ public class HasEnoughMoneyAction extends AbstractAction {
         String failure = args.getString("onfailure", null);
         String account = args.getString("account", conversation.getPlayer().getName());
         account = ParseString.INST.parse(conversation, account);
-        String stringAmount = args.getString("amount");
-        stringAmount = ParseString.INST.parse(conversation, stringAmount);
-        double amount;
-
-        try {
-            amount = MathHelper.solveDoubleFormula(stringAmount);
-        }
-        catch(WrongFormulaException e) {
-            throw new WrongArgumentValueException("Wrong argument value in action '" + getName() + "': Amount '" + stringAmount + "' is not a double!");
-        }
+        
         Economy economy = RaidCraft.getEconomy();
+        String amountString = args.getString("amount");
+        amountString = ParseString.INST.parse(conversation, amountString);
+        double amount = economy.parseCurrencyInput(amountString);
 
         conversation.set("money", amount);
         conversation.set("money_formatted", economy.getFormattedAmount(amount));
@@ -41,8 +35,7 @@ public class HasEnoughMoneyAction extends AbstractAction {
                 conversation.setCurrentStage(success);
                 conversation.triggerCurrentStage();
             }
-        }
-        else {
+        } else {
             if(failure != null) {
                 conversation.setCurrentStage(failure);
                 conversation.triggerCurrentStage();
