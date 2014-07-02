@@ -142,7 +142,7 @@ public class RCEconomyPlugin extends BasePlugin implements Economy {
     public boolean hasEnough(String accountName, double amount) {
 
         double balance = RaidCraft.getTable(BalanceTable.class).getBalance(accountName);
-        return balance >= amount;
+        return amount <= 0 || balance >= amount;
     }
 
     @Override
