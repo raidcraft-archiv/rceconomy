@@ -24,17 +24,18 @@ import java.util.List;
  */
 public class RCEconomyPlugin extends BasePlugin {
 
-    private EconomyConfig config;
+    @Getter
+    private EconomyConfig economyConfig;
     @Getter
     private Economy api;
 
     @Override
     public void enable() {
 
-        config = configure(new EconomyConfig(this));
+        economyConfig = configure(new EconomyConfig(this));
         setupDatabase();
 
-        api = new RcEconomy(this, config);
+        api = new RcEconomy(this, economyConfig);
         RaidCraft.setupEconomy(api);
 
         registerCommands(MoneyCommands.class, getName());

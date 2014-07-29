@@ -10,6 +10,7 @@ import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
+import de.raidcraft.reference.Colors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -31,6 +32,11 @@ public class MoneyCommands {
         api = plugin.getApi();
     }
 
+    public static String castUUID(CommandSender sender) {
+
+        return ((Player) sender).getUniqueId().toString();
+    }
+
     @Command(
             aliases = {"money", "coins", "geld"},
             desc = "Main money command"
@@ -38,11 +44,11 @@ public class MoneyCommands {
     @NestedCommand(value = NestedLootCommands.class, executeBody = true)
     public void money(CommandContext context, CommandSender sender) throws CommandException {
 
-        if(!(sender instanceof Player)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage("Spielerkommando");
             return;
         }
-        String target = ((Player) sender).getUniqueId().toString();
+        String target = castUUID(sender);
         double balance = api.getBalance(AccountType.PLAYER, target);
         sender.sendMessage(ChatColor.GREEN + "Dein Kontostand: " + api.getFormattedAmount(balance));
     }
@@ -66,46 +72,62 @@ public class MoneyCommands {
         public void reload(CommandContext context, CommandSender sender) throws CommandException {
 
             RaidCraft.getComponent(RCEconomyPlugin.class).reload();
-            sender.sendMessage(ChatColor.GREEN + "RCEconomy wurde neugeladen!");
+            sender.sendMessage(Colors.Chat.SUCCESS + "RCEconomy wurde neugeladen!");
         }
 
         @Command(
-                aliases = {"info", "player", "p"},
-                desc = "Info"
+                aliases = {"info", "player", "p", "flow"},
+                desc = "Zeigt den Verlauf deines Geldes an",
+                usage = "<playername> <entries>"
         )
         @CommandPermissions("rceconomy.use")
         public void info(CommandContext context, CommandSender sender) throws CommandException {
 
-            String target = sender.getName();
+            String target = null;
             if (context.argsLength() > 0) {
                 if (!sender.hasPermission("rceconomy.admin")) {
                     throw new CommandException("Du hast keine Rechte dir Fremde Kontostände anzuzeigen!");
                 }
-                target = context.getString(0);
+                // TODO: intern table?
+                target = Bukkit.getOfflinePlayer(context.getString(0)).getUniqueId().toString();
                 if (!api.accountExists(AccountType.PLAYER, target)) {
                     throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
                 }
             }
+            if (target == null) {
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage("Spielerkommando");
+                    return;
+                }
+                target = castUUID(sender);
+            }
 
-            int number = 10;
+            int number = plugin.getEconomyConfig().sizePrintFlowEntries;
             if (context.argsLength() > 1) {
                 number = context.getInteger(1);
             }
 
             double balance = api.getBalance(AccountType.PLAYER, target);
-            sender.sendMessage(ChatColor.YELLOW + target + "s" + ChatColor.GREEN + " Kontostand: " + api.getFormattedAmount(balance));
+            sender.sendMessage(Colors.Chat.INFO + target + "s" + Colors.Chat.SUCCESS + " Kontostand: " + api.getFormattedAmount(balance));
             api.printFlow(sender, AccountType.PLAYER, target, number);
         }
 
         @Command(
-                aliases = {"pay"},
-                desc = "Pay",
+                aliases = {"pay", "transfer"},
+                desc = "Überträgt Geld zu einem anderen Spieler",
+                usage = "<Zielspieler> <Betrag>",
                 min = 2
         )
         @CommandPermissions("rceconomy.use")
         public void pay(CommandContext context, CommandSender sender) throws CommandException {
 
-            String target = context.getString(0).toLowerCase();
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("Spielerkommando");
+                return;
+            }
+            String sender_id = castUUID(sender);
+            // TODO: UUID
+            String target = Bukkit.getOfflinePlayer(context.getString(0)).getUniqueId().toString();
             // lets parse the input for an amount
             double amount = api.parseCurrencyInput(context.getJoinedStrings(1));
 
@@ -117,7 +139,7 @@ public class MoneyCommands {
                 throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
             }
 
-            if (!api.hasEnough(AccountType.PLAYER, sender.getName(), amount)) {
+            if (!api.hasEnough(AccountType.PLAYER, sender_id, amount)) {
                 throw new CommandException("Du hast nicht genügend Geld auf deinem Konto!");
             }
 
@@ -130,65 +152,52 @@ public class MoneyCommands {
             }
 
             String detail = sender.getName() + " --> " + target;
-            api.modify(AccountType.PLAYER, sender.getName(), -amount, BalanceSource.PAY_COMMAND, detail);
+            api.modify(AccountType.PLAYER, sender_id, -amount, BalanceSource.PAY_COMMAND, detail);
             api.modify(AccountType.PLAYER, target, amount, BalanceSource.PAY_COMMAND, detail);
 
         }
 
         @Command(
-                aliases = {"flow"},
-                desc = "Flow"
-        )
-        @CommandPermissions("rceconomy.use")
-        public void flow(CommandContext context, CommandSender sender) throws CommandException {
-
-            int number = 10;
-            if (context.argsLength() > 0) {
-                number = context.getInteger(0);
-            }
-
-            api.printFlow(sender, AccountType.PLAYER, sender.getName(), number);
-        }
-
-        @Command(
                 aliases = {"give"},
-                desc = "Give",
+                desc = "ADMIN: Give a player money",
+                usage = "<Spieler> <Betrag> [FlowDetails]",
                 min = 2
         )
         @CommandPermissions("rceconomy.admin")
-        public void give(CommandContext context, CommandSender sender, String target1) throws CommandException {
-
-            String pitarget1 = context.getString(0).toLowerCase();
-            // lets parse the input for an amount
-            double amount = api.parseCurrencyInput(context.getJoinedStrings(1));
+        public void give(CommandContext context, CommandSender sender) throws CommandException {
+            // TODO: UUID
+            String target = Bukkit.getOfflinePlayer(context.getString(0)).getUniqueId().toString();
+            double amount = context.getDouble(1);
 
             if (amount <= 0.0) {
                 throw new CommandException("Der Betrag muss positiv und mindestens 1 Kuper sein.");
             }
 
-            if (!api.accountExists(AccountType.PLAYER, target1)) {
-                throw new CommandException("Der Bank Account '" + target1 + "' existiert nicht!");
+            if (!api.accountExists(AccountType.PLAYER, target)) {
+                throw new CommandException("Der Spieler Account '" + target + "' existiert nicht!");
             }
 
             String detail = null;
             if (context.argsLength() > 2) {
                 detail = context.getJoinedStrings(2);
             }
-            api.modify(AccountType.PLAYER, target1, amount, BalanceSource.ADMIN_COMMAND, detail);
-            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target1 + "' wurde mit " + api.getFormattedAmount(round(amount)) + ChatColor.GREEN + " begünstigt!");
+            api.modify(AccountType.PLAYER, target, amount, BalanceSource.ADMIN_COMMAND, detail);
+            sender.sendMessage(Colors.Chat.SUCCESS + "Der Spieler Account von '" + target + "' wurde mit "
+                    + api.getFormattedAmount(round(amount)) + Colors.Chat.SUCCESS + " begünstigt!");
         }
 
         @Command(
                 aliases = {"take"},
-                desc = "Take",
+                desc = "ADMIN: Take money from a player",
+                usage = "<Spieler> <Betrag> [FlowDetails]",
                 min = 2
         )
         @CommandPermissions("rceconomy.admin")
         public void take(CommandContext context, CommandSender sender) throws CommandException {
 
-            String target = context.getString(0).toLowerCase();
-            // lets parse the input for an amount
-            double amount = api.parseCurrencyInput(context.getJoinedStrings(1));
+            // TODO: UUID
+            String target = Bukkit.getOfflinePlayer(context.getString(0)).getUniqueId().toString();
+            double amount = context.getDouble(1);
 
             if (amount <= 0.0) {
                 throw new CommandException("Der Betrag muss positiv und mindestens 1 Kuper sein.");
@@ -203,20 +212,22 @@ public class MoneyCommands {
                 detail = context.getJoinedStrings(2);
             }
             api.modify(AccountType.PLAYER, target, -amount, BalanceSource.ADMIN_COMMAND, detail);
-            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + api.getFormattedAmount(round(amount)) + ChatColor.GREEN + " belastet!");
+            sender.sendMessage(Colors.Chat.SUCCESS + "Der Spieler Account von '" + target + "' wurde mit "
+                    + api.getFormattedAmount(round(amount)) + Colors.Chat.SUCCESS + " belastet!");
         }
 
         @Command(
                 aliases = {"set"},
-                desc = "Take",
+                desc = "ADMIN: set money of a player",
+                usage = "<Spieler> <Betrag> [FlowDetails]",
                 min = 2
         )
         @CommandPermissions("rceconomy.admin")
         public void set(CommandContext context, CommandSender sender) throws CommandException {
 
-            String target = context.getString(0).toLowerCase();
-            // lets parse the input for an amount
-            double amount = api.parseCurrencyInput(context.getJoinedStrings(1));
+            // TODO: UUID
+            String target = Bukkit.getOfflinePlayer(context.getString(0)).getUniqueId().toString();
+            double amount = context.getDouble(1);
 
             if (!api.accountExists(AccountType.PLAYER, target)) {
                 throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
@@ -227,7 +238,8 @@ public class MoneyCommands {
                 detail = context.getJoinedStrings(2);
             }
             api.set(AccountType.PLAYER, target, amount, BalanceSource.ADMIN_COMMAND, detail);
-            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde auf " + api.getFormattedAmount(round(amount)) + ChatColor.GREEN + " gesetzt!");
+            sender.sendMessage(Colors.Chat.SUCCESS + "Der Spieler Account von '" + target + "' wurde auf "
+                    + api.getFormattedAmount(round(amount)) + Colors.Chat.SUCCESS + " gesetzt!");
         }
 
         private double round(double d) {

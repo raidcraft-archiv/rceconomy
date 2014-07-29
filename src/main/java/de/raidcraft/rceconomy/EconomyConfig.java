@@ -10,6 +10,8 @@ public class EconomyConfig extends ConfigurationBase<RCEconomyPlugin> {
 
     @Setting("initial-amount")
     public double initialAmount = 0.0;
+    @Setting("size-print-flow-entries")
+    public int sizePrintFlowEntries = 10;
     @Setting("currency-name-singular")
     public String currencySingular = "Coin";
     @Setting("currency-name-plural")
