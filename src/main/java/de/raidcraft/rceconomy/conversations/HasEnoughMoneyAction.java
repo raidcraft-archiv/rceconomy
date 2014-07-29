@@ -1,14 +1,12 @@
-package de.raidcraft.rceconomy.actionapi;
+package de.raidcraft.rceconomy.conversations;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.api.economy.Economy;
-import de.raidcraft.rcconversations.api.action.AbstractAction;
-import de.raidcraft.rcconversations.api.action.ActionArgumentException;
-import de.raidcraft.rcconversations.api.action.ActionArgumentList;
-import de.raidcraft.rcconversations.api.action.ActionInformation;
+import de.raidcraft.rcconversations.api.action.*;
 import de.raidcraft.rcconversations.api.conversation.Conversation;
+import de.raidcraft.rcconversations.util.MathHelper;
 import de.raidcraft.rcconversations.util.ParseString;
+import de.raidcraft.rcconversations.util.WrongFormulaException;
 
 /**
  * @author Philip Urban
@@ -32,8 +30,7 @@ public class HasEnoughMoneyAction extends AbstractAction {
         conversation.set("money", amount);
         conversation.set("money_formatted", economy.getFormattedAmount(amount));
 
-        // TODO: add type
-        if(economy.hasEnough(AccountType.PLAYER, account, amount)) {
+        if(economy.hasEnough(account, amount)) {
             if(success != null) {
                 conversation.setCurrentStage(success);
                 conversation.triggerCurrentStage();
