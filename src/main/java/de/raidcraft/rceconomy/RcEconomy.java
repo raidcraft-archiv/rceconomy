@@ -8,6 +8,7 @@ import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rceconomy.tables.TAccount;
 import de.raidcraft.rceconomy.tables.TFlow;
 import de.raidcraft.util.CustomItemUtil;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -200,7 +201,9 @@ public class RcEconomy implements Economy {
         List<TFlow> activities = plugin.getDatabase().find(TFlow.class)
                 .where()
                 .eq("account", account).setMaxRows(entries).findList();
-
+        if(type == AccountType.PLAYER) {
+            accountName = UUIDUtil.getNameFromUUID(accountName);
+        }
         sender.sendMessage(ChatColor.GREEN + "Die letzten Kontobewegungen von "
                 + ChatColor.YELLOW + accountName + ChatColor.GREEN + ":");
         String detail;

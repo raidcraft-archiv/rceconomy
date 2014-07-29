@@ -11,8 +11,7 @@ import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
 import de.raidcraft.reference.Colors;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -32,11 +31,6 @@ public class MoneyCommands {
         api = plugin.getApi();
     }
 
-    public static String castUUID(CommandSender sender) {
-
-        return ((Player) sender).getUniqueId().toString();
-    }
-
     @Command(
             aliases = {"money", "coins", "geld"},
             desc = "Main money command"
@@ -48,9 +42,9 @@ public class MoneyCommands {
             sender.sendMessage("Spielerkommando");
             return;
         }
-        String target = castUUID(sender);
+        String target = UUIDUtil.castUUID(sender);
         double balance = api.getBalance(AccountType.PLAYER, target);
-        sender.sendMessage(ChatColor.GREEN + "Dein Kontostand: " + api.getFormattedAmount(balance));
+        sender.sendMessage(Colors.Chat.SUCCESS + "Dein Kontostand: " + api.getFormattedAmount(balance));
     }
 
     public static class NestedLootCommands {
@@ -83,23 +77,25 @@ public class MoneyCommands {
         @CommandPermissions("rceconomy.use")
         public void info(CommandContext context, CommandSender sender) throws CommandException {
 
-            String target = null;
+            String target_id = null;
+            String target_name  = null;
             if (context.argsLength() > 0) {
                 if (!sender.hasPermission("rceconomy.admin")) {
                     throw new CommandException("Du hast keine Rechte dir Fremde Kontostände anzuzeigen!");
                 }
-                // TODO: intern table?
-                target = Bukkit.getOfflinePlayer(context.getString(0)).getUniqueId().toString();
-                if (!api.accountExists(AccountType.PLAYER, target)) {
-                    throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
+                target_name = context.getString(0);
+                target_id = UUIDUtil.getUUIDStringFromName(target_name);
+                if (!api.accountExists(AccountType.PLAYER, target_id)) {
+                    throw new CommandException("Der Bankaccount '" + target_name + "' existiert nicht!");
                 }
             }
-            if (target == null) {
+            if (target_id == null) {
                 if (!(sender instanceof Player)) {
                     sender.sendMessage("Spielerkommando");
                     return;
                 }
-                target = castUUID(sender);
+                target_name = sender.getName();
+                target_id = UUIDUtil.castUUID(sender);
             }
 
             int number = plugin.getEconomyConfig().sizePrintFlowEntries;
@@ -107,9 +103,10 @@ public class MoneyCommands {
                 number = context.getInteger(1);
             }
 
-            double balance = api.getBalance(AccountType.PLAYER, target);
-            sender.sendMessage(Colors.Chat.INFO + target + "s" + Colors.Chat.SUCCESS + " Kontostand: " + api.getFormattedAmount(balance));
-            api.printFlow(sender, AccountType.PLAYER, target, number);
+            double balance = api.getBalance(AccountType.PLAYER, target_id);
+            sender.sendMessage(Colors.Chat.INFO + target_name
+                    + "s" + Colors.Chat.SUCCESS + " Kontostand: " + api.getFormattedAmount(balance));
+            api.printFlow(sender, AccountType.PLAYER, target_id, number);
         }
 
         @Command(
@@ -125,9 +122,9 @@ public class MoneyCommands {
                 sender.sendMessage("Spielerkommando");
                 return;
             }
-            String sender_id = castUUID(sender);
-            // TODO: UUID
-            String target = Bukkit.getOfflinePlayer(context.getString(0)).getUniqueId().toString();
+            String sender_id = UUIDUtil.castUUID(sender);
+            String target_name = context.getString(0);
+            String target_id = UUIDUtil.getUUIDStringFromName(target_name);
             // lets parse the input for an amount
             double amount = api.parseCurrencyInput(context.getJoinedStrings(1));
 
@@ -135,25 +132,21 @@ public class MoneyCommands {
                 throw new CommandException("Der Betrag muss positiv sein und mindestens 1 Kupfer betragen.");
             }
 
-            if (!api.accountExists(AccountType.PLAYER, target)) {
-                throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
+            if (!api.accountExists(AccountType.PLAYER, target_id)) {
+                throw new CommandException("Der Bank Account '" + target_name + "' existiert nicht!");
             }
 
             if (!api.hasEnough(AccountType.PLAYER, sender_id, amount)) {
                 throw new CommandException("Du hast nicht genügend Geld auf deinem Konto!");
             }
 
-            if (sender.getName().equalsIgnoreCase(target)) {
+            if (sender.getName().equalsIgnoreCase(target_name)) {
                 throw new CommandException("Du kannst dir nicht selbst Geld überweisen.");
             }
 
-            if (Bukkit.getPlayer(target) != null) {
-                target = Bukkit.getPlayer(target).getName();
-            }
-
-            String detail = sender.getName() + " --> " + target;
+            String detail = sender.getName() + " --> " + target_name;
             api.modify(AccountType.PLAYER, sender_id, -amount, BalanceSource.PAY_COMMAND, detail);
-            api.modify(AccountType.PLAYER, target, amount, BalanceSource.PAY_COMMAND, detail);
+            api.modify(AccountType.PLAYER, target_id, amount, BalanceSource.PAY_COMMAND, detail);
 
         }
 
@@ -165,24 +158,25 @@ public class MoneyCommands {
         )
         @CommandPermissions("rceconomy.admin")
         public void give(CommandContext context, CommandSender sender) throws CommandException {
-            // TODO: UUID
-            String target = Bukkit.getOfflinePlayer(context.getString(0)).getUniqueId().toString();
+
+            String target_name = context.getString(0);
+            String target_id = UUIDUtil.getUUIDStringFromName(target_name);
             double amount = context.getDouble(1);
 
             if (amount <= 0.0) {
                 throw new CommandException("Der Betrag muss positiv und mindestens 1 Kuper sein.");
             }
 
-            if (!api.accountExists(AccountType.PLAYER, target)) {
-                throw new CommandException("Der Spieler Account '" + target + "' existiert nicht!");
+            if (!api.accountExists(AccountType.PLAYER, target_id)) {
+                throw new CommandException("Der Spieler Account '" + target_name + "' existiert nicht!");
             }
 
             String detail = null;
             if (context.argsLength() > 2) {
                 detail = context.getJoinedStrings(2);
             }
-            api.modify(AccountType.PLAYER, target, amount, BalanceSource.ADMIN_COMMAND, detail);
-            sender.sendMessage(Colors.Chat.SUCCESS + "Der Spieler Account von '" + target + "' wurde mit "
+            api.modify(AccountType.PLAYER, target_id, amount, BalanceSource.ADMIN_COMMAND, detail);
+            sender.sendMessage(Colors.Chat.SUCCESS + "Der Spieler Account von '" + target_name + "' wurde mit "
                     + api.getFormattedAmount(round(amount)) + Colors.Chat.SUCCESS + " begünstigt!");
         }
 
@@ -195,24 +189,24 @@ public class MoneyCommands {
         @CommandPermissions("rceconomy.admin")
         public void take(CommandContext context, CommandSender sender) throws CommandException {
 
-            // TODO: UUID
-            String target = Bukkit.getOfflinePlayer(context.getString(0)).getUniqueId().toString();
+            String target_name = context.getString(0);
+            String target_id = UUIDUtil.getUUIDStringFromName(target_name);
             double amount = context.getDouble(1);
 
             if (amount <= 0.0) {
                 throw new CommandException("Der Betrag muss positiv und mindestens 1 Kuper sein.");
             }
 
-            if (!api.accountExists(AccountType.PLAYER, target)) {
-                throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
+            if (!api.accountExists(AccountType.PLAYER, target_id)) {
+                throw new CommandException("Der Bank Account '" + target_name + "' existiert nicht!");
             }
 
             String detail = null;
             if (context.argsLength() > 2) {
                 detail = context.getJoinedStrings(2);
             }
-            api.modify(AccountType.PLAYER, target, -amount, BalanceSource.ADMIN_COMMAND, detail);
-            sender.sendMessage(Colors.Chat.SUCCESS + "Der Spieler Account von '" + target + "' wurde mit "
+            api.modify(AccountType.PLAYER, target_id, -amount, BalanceSource.ADMIN_COMMAND, detail);
+            sender.sendMessage(Colors.Chat.SUCCESS + "Der Spieler Account von '" + target_name + "' wurde mit "
                     + api.getFormattedAmount(round(amount)) + Colors.Chat.SUCCESS + " belastet!");
         }
 
@@ -225,20 +219,20 @@ public class MoneyCommands {
         @CommandPermissions("rceconomy.admin")
         public void set(CommandContext context, CommandSender sender) throws CommandException {
 
-            // TODO: UUID
-            String target = Bukkit.getOfflinePlayer(context.getString(0)).getUniqueId().toString();
+            String target_name = context.getString(0);
+            String target_id = UUIDUtil.getUUIDStringFromName(target_name);
             double amount = context.getDouble(1);
 
-            if (!api.accountExists(AccountType.PLAYER, target)) {
-                throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
+            if (!api.accountExists(AccountType.PLAYER, target_id)) {
+                throw new CommandException("Der Bank Account '" + target_name + "' existiert nicht!");
             }
 
             String detail = null;
             if (context.argsLength() > 2) {
                 detail = context.getJoinedStrings(2);
             }
-            api.set(AccountType.PLAYER, target, amount, BalanceSource.ADMIN_COMMAND, detail);
-            sender.sendMessage(Colors.Chat.SUCCESS + "Der Spieler Account von '" + target + "' wurde auf "
+            api.set(AccountType.PLAYER, target_id, amount, BalanceSource.ADMIN_COMMAND, detail);
+            sender.sendMessage(Colors.Chat.SUCCESS + "Der Spieler Account von '" + target_name + "' wurde auf "
                     + api.getFormattedAmount(round(amount)) + Colors.Chat.SUCCESS + " gesetzt!");
         }
 
