@@ -2,13 +2,15 @@ package de.raidcraft.rceconomy;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.action.action.ActionException;
+import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rcconversations.actions.ActionManager;
+import de.raidcraft.rceconomy.actionapi.HasEnoughMoneyAction;
+import de.raidcraft.rceconomy.actionapi.ModifyMoneyAction;
+import de.raidcraft.rceconomy.actionapi.ParseMoneyInputAction;
 import de.raidcraft.rceconomy.commands.MoneyCommands;
-import de.raidcraft.rceconomy.conversations.HasEnoughMoneyAction;
-import de.raidcraft.rceconomy.conversations.ParseMoneyInputAction;
-import de.raidcraft.rceconomy.conversations.SubstractMoneyAction;
 import de.raidcraft.rceconomy.listener.BalanceListener;
 import de.raidcraft.rceconomy.listener.PlayerListener;
 import de.raidcraft.rceconomy.tables.TAccount;
@@ -42,9 +44,14 @@ public class RCEconomyPlugin extends BasePlugin {
         registerEvents(new PlayerListener());
         registerEvents(new BalanceListener());
 
+        try {
+            ActionFactory.getInstance().registerAction(this, "playermoney.modify", new ModifyMoneyAction(getApi()));
+        } catch (ActionException e) {
+            e.printStackTrace();
+        }
+
         // TODO: use new system
         ActionManager.registerAction(new HasEnoughMoneyAction());
-        ActionManager.registerAction(new SubstractMoneyAction());
         ActionManager.registerAction(new ParseMoneyInputAction());
     }
 
@@ -54,6 +61,7 @@ public class RCEconomyPlugin extends BasePlugin {
     }
 
     public TAccount getAccount(AccountType type, String name) {
+
         return getDatabase().find(TAccount.class)
                 .where()
                 .eq("type", type)

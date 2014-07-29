@@ -1,4 +1,4 @@
-package de.raidcraft.rceconomy.conversations;
+package de.raidcraft.rceconomy.actionapi;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.AccountType;
