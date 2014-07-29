@@ -2,6 +2,6 @@ main: de.raidcraft.rceconomy.RCEconomyPlugin
 name: RCEconomy
 version: ${project.version}#${build.number}
 description: Provides money transfer.
-author: Strasse36
+author: Strasse36, IDragonfire
 website: http://www.raid-craft.de
 depend: [RaidCraft-API, RCConversations]

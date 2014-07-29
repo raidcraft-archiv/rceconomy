@@ -1,12 +1,19 @@
 package de.raidcraft.rceconomy.commands;
 
-import com.sk89q.minecraft.util.commands.*;
+import com.sk89q.minecraft.util.commands.Command;
+import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
+import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.api.economy.BalanceSource;
+import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  * Author: Philip
@@ -15,11 +22,13 @@ import org.bukkit.command.CommandSender;
  */
 public class MoneyCommands {
 
-    private final RCEconomyPlugin plugin;
+    private RCEconomyPlugin plugin;
+    private Economy api;
 
     public MoneyCommands(RCEconomyPlugin plugin) {
 
         this.plugin = plugin;
+        api = plugin.getApi();
     }
 
     @Command(
@@ -29,18 +38,24 @@ public class MoneyCommands {
     @NestedCommand(value = NestedLootCommands.class, executeBody = true)
     public void money(CommandContext context, CommandSender sender) throws CommandException {
 
-        String target = sender.getName();
-        double balance = plugin.getBalance(target);
-        sender.sendMessage(ChatColor.GREEN + "Dein Kontostand: " + plugin.getFormattedAmount(balance));
+        if(!(sender instanceof Player)) {
+            sender.sendMessage("Spielerkommando");
+            return;
+        }
+        String target = ((Player) sender).getUniqueId().toString();
+        double balance = api.getBalance(AccountType.PLAYER, target);
+        sender.sendMessage(ChatColor.GREEN + "Dein Kontostand: " + api.getFormattedAmount(balance));
     }
 
     public static class NestedLootCommands {
 
-        private final RCEconomyPlugin plugin;
+        private RCEconomyPlugin plugin;
+        private Economy api;
 
         public NestedLootCommands(RCEconomyPlugin plugin) {
 
             this.plugin = plugin;
+            this.api = plugin.getApi();
         }
 
         @Command(
@@ -62,24 +77,24 @@ public class MoneyCommands {
         public void info(CommandContext context, CommandSender sender) throws CommandException {
 
             String target = sender.getName();
-            if(context.argsLength() > 0) {
-                if(!sender.hasPermission("rceconomy.admin")) {
+            if (context.argsLength() > 0) {
+                if (!sender.hasPermission("rceconomy.admin")) {
                     throw new CommandException("Du hast keine Rechte dir Fremde Kontostände anzuzeigen!");
                 }
                 target = context.getString(0);
-                if(!plugin.accountExists(target)) {
+                if (!api.accountExists(AccountType.PLAYER, target)) {
                     throw new CommandException("Der Bankaccount '" + target + "' existiert nicht!");
                 }
             }
 
             int number = 10;
-            if(context.argsLength() > 1) {
+            if (context.argsLength() > 1) {
                 number = context.getInteger(1);
             }
 
-            double balance = plugin.getBalance(target);
-            sender.sendMessage(ChatColor.YELLOW + target + "s" + ChatColor.GREEN + " Kontostand: " + plugin.getFormattedAmount(balance));
-            plugin.printFlow(sender, target, number);
+            double balance = api.getBalance(AccountType.PLAYER, target);
+            sender.sendMessage(ChatColor.YELLOW + target + "s" + ChatColor.GREEN + " Kontostand: " + api.getFormattedAmount(balance));
+            api.printFlow(sender, AccountType.PLAYER, target, number);
         }
 
         @Command(
@@ -92,31 +107,31 @@ public class MoneyCommands {
 
             String target = context.getString(0).toLowerCase();
             // lets parse the input for an amount
-            double amount = plugin.parseCurrencyInput(context.getJoinedStrings(1));
+            double amount = api.parseCurrencyInput(context.getJoinedStrings(1));
 
-            if(amount <= 0.0) {
+            if (amount <= 0.0) {
                 throw new CommandException("Der Betrag muss positiv sein und mindestens 1 Kupfer betragen.");
             }
 
-            if(!plugin.accountExists(target)) {
+            if (!api.accountExists(AccountType.PLAYER, target)) {
                 throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
             }
 
-            if(!plugin.hasEnough(sender.getName(), amount)) {
+            if (!api.hasEnough(AccountType.PLAYER, sender.getName(), amount)) {
                 throw new CommandException("Du hast nicht genügend Geld auf deinem Konto!");
             }
 
-            if(sender.getName().equalsIgnoreCase(target)) {
+            if (sender.getName().equalsIgnoreCase(target)) {
                 throw new CommandException("Du kannst dir nicht selbst Geld überweisen.");
             }
 
-            if(Bukkit.getPlayer(target) != null) {
+            if (Bukkit.getPlayer(target) != null) {
                 target = Bukkit.getPlayer(target).getName();
             }
 
             String detail = sender.getName() + " --> " + target;
-            plugin.modify(sender.getName(), -amount, BalanceSource.PAY_COMMAND, detail);
-            plugin.modify(target, amount, BalanceSource.PAY_COMMAND, detail);
+            api.modify(AccountType.PLAYER, sender.getName(), -amount, BalanceSource.PAY_COMMAND, detail);
+            api.modify(AccountType.PLAYER, target, amount, BalanceSource.PAY_COMMAND, detail);
 
         }
 
@@ -128,11 +143,11 @@ public class MoneyCommands {
         public void flow(CommandContext context, CommandSender sender) throws CommandException {
 
             int number = 10;
-            if(context.argsLength() > 0) {
+            if (context.argsLength() > 0) {
                 number = context.getInteger(0);
             }
 
-            plugin.printFlow(sender, sender.getName(), number);
+            api.printFlow(sender, AccountType.PLAYER, sender.getName(), number);
         }
 
         @Command(
@@ -140,27 +155,27 @@ public class MoneyCommands {
                 desc = "Give",
                 min = 2
         )
-         @CommandPermissions("rceconomy.admin")
-         public void give(CommandContext context, CommandSender sender) throws CommandException {
+        @CommandPermissions("rceconomy.admin")
+        public void give(CommandContext context, CommandSender sender, String target1) throws CommandException {
 
-            String target = context.getString(0).toLowerCase();
+            String pitarget1 = context.getString(0).toLowerCase();
             // lets parse the input for an amount
-            double amount = plugin.parseCurrencyInput(context.getJoinedStrings(1));
+            double amount = api.parseCurrencyInput(context.getJoinedStrings(1));
 
-            if(amount <= 0.0) {
+            if (amount <= 0.0) {
                 throw new CommandException("Der Betrag muss positiv und mindestens 1 Kuper sein.");
             }
 
-            if(!plugin.accountExists(target)) {
-                throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
+            if (!api.accountExists(AccountType.PLAYER, target1)) {
+                throw new CommandException("Der Bank Account '" + target1 + "' existiert nicht!");
             }
 
             String detail = null;
-            if(context.argsLength() > 2) {
+            if (context.argsLength() > 2) {
                 detail = context.getJoinedStrings(2);
             }
-            plugin.modify(target, amount, BalanceSource.ADMIN_COMMAND, detail);
-            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + plugin.getFormattedAmount(round(amount)) + ChatColor.GREEN + " begünstigt!");
+            api.modify(AccountType.PLAYER, target1, amount, BalanceSource.ADMIN_COMMAND, detail);
+            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target1 + "' wurde mit " + api.getFormattedAmount(round(amount)) + ChatColor.GREEN + " begünstigt!");
         }
 
         @Command(
@@ -173,22 +188,22 @@ public class MoneyCommands {
 
             String target = context.getString(0).toLowerCase();
             // lets parse the input for an amount
-            double amount = plugin.parseCurrencyInput(context.getJoinedStrings(1));
+            double amount = api.parseCurrencyInput(context.getJoinedStrings(1));
 
-            if(amount <= 0.0) {
+            if (amount <= 0.0) {
                 throw new CommandException("Der Betrag muss positiv und mindestens 1 Kuper sein.");
             }
 
-            if(!plugin.accountExists(target)) {
+            if (!api.accountExists(AccountType.PLAYER, target)) {
                 throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
             }
 
             String detail = null;
-            if(context.argsLength() > 2) {
+            if (context.argsLength() > 2) {
                 detail = context.getJoinedStrings(2);
             }
-            plugin.modify(target, -amount, BalanceSource.ADMIN_COMMAND, detail);
-            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + plugin.getFormattedAmount(round(amount)) + ChatColor.GREEN + " belastet!");
+            api.modify(AccountType.PLAYER, target, -amount, BalanceSource.ADMIN_COMMAND, detail);
+            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde mit " + api.getFormattedAmount(round(amount)) + ChatColor.GREEN + " belastet!");
         }
 
         @Command(
@@ -201,22 +216,23 @@ public class MoneyCommands {
 
             String target = context.getString(0).toLowerCase();
             // lets parse the input for an amount
-            double amount = plugin.parseCurrencyInput(context.getJoinedStrings(1));
+            double amount = api.parseCurrencyInput(context.getJoinedStrings(1));
 
-            if(!plugin.accountExists(target)) {
+            if (!api.accountExists(AccountType.PLAYER, target)) {
                 throw new CommandException("Der Bank Account '" + target + "' existiert nicht!");
             }
 
             String detail = null;
-            if(context.argsLength() > 2) {
+            if (context.argsLength() > 2) {
                 detail = context.getJoinedStrings(2);
             }
-            plugin.set(target, amount, BalanceSource.ADMIN_COMMAND, detail);
-            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde auf " + plugin.getFormattedAmount(round(amount)) + ChatColor.GREEN + " gesetzt!");
+            api.set(AccountType.PLAYER, target, amount, BalanceSource.ADMIN_COMMAND, detail);
+            sender.sendMessage(ChatColor.GREEN + "Der Bankaccount von '" + target + "' wurde auf " + api.getFormattedAmount(round(amount)) + ChatColor.GREEN + " gesetzt!");
         }
+
         private double round(double d) {
 
-            return Math.round(d*100)/100.0;
+            return Math.round(d * 100) / 100.0;
         }
     }
 }
