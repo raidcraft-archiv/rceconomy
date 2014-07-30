@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +48,12 @@ public class RcEconomy implements Economy {
     }
 
     @Override
+    public void createAccount(UUID player) {
+
+        createAccount(AccountType.PLAYER, player.toString());
+    }
+
+    @Override
     public void createAccount(AccountType type, String accountName) {
 
         TAccount account = new TAccount();
@@ -57,9 +64,21 @@ public class RcEconomy implements Economy {
     }
 
     @Override
+    public void deleteAccount(UUID player) {
+
+        deleteAccount(AccountType.PLAYER, player.toString());
+    }
+
+    @Override
     public void deleteAccount(AccountType type, String accountName) {
 
         plugin.getDatabase().delete(plugin.getAccount(type, accountName));
+    }
+
+    @Override
+    public boolean accountExists(UUID player) {
+
+        return accountExists(AccountType.PLAYER, player.toString());
     }
 
     @Override
@@ -69,9 +88,22 @@ public class RcEconomy implements Economy {
     }
 
     @Override
+    public double getBalance(UUID player) {
+
+        return getBalance(AccountType.PLAYER, player.toString());
+    }
+
+    @Override
     public double getBalance(AccountType type, String accountName) {
+
         TAccount acc = plugin.getAccount(type, accountName);
         return acc.getBalance();
+    }
+
+    @Override
+    public String getFormattedBalance(UUID player) {
+
+        return getFormattedBalance(AccountType.PLAYER, player.toString());
     }
 
     @Override
@@ -112,6 +144,12 @@ public class RcEconomy implements Economy {
     }
 
     @Override
+    public boolean hasEnough(UUID player, double amount) {
+
+        return hasEnough(AccountType.PLAYER, player.toString(), amount);
+    }
+
+    @Override
     public boolean hasEnough(AccountType type, String accountName, double amount) {
 
         double balance = getBalance(type, accountName);
@@ -119,9 +157,21 @@ public class RcEconomy implements Economy {
     }
 
     @Override
+    public void substract(UUID player, double amount) {
+
+        substract(AccountType.PLAYER, player.toString(), amount);
+    }
+
+    @Override
     public void substract(AccountType type, String accountName, double amount) {
 
         modify(type, accountName, -amount);
+    }
+
+    @Override
+    public void substract(UUID player, double amount, BalanceSource source, String detail) {
+
+        substract(AccountType.PLAYER, player.toString(), amount, source, detail);
     }
 
     @Override
@@ -132,9 +182,21 @@ public class RcEconomy implements Economy {
     }
 
     @Override
+    public void add(UUID player, double amount) {
+
+        add(AccountType.PLAYER, player.toString(), amount);
+    }
+
+    @Override
     public void add(AccountType type, String accountName, double amount) {
 
         modify(type, accountName, amount);
+    }
+
+    @Override
+    public void add(UUID player, double amount, BalanceSource source, String detail) {
+
+        add(AccountType.PLAYER, player.toString(), amount, source, detail);
     }
 
     @Override
@@ -145,9 +207,21 @@ public class RcEconomy implements Economy {
     }
 
     @Override
+    public void modify(UUID player, double amount) {
+
+        modify(AccountType.PLAYER, player.toString(), amount);
+    }
+
+    @Override
     public void modify(AccountType type, String accountName, double amount) {
 
         modify(type, accountName, amount, BalanceSource.PLUGIN, null);
+    }
+
+    @Override
+    public void modify(UUID player, double amount, BalanceSource source, String detail) {
+
+        modify(AccountType.PLAYER, player.toString(), amount, source, detail);
     }
 
     @Override
@@ -171,9 +245,21 @@ public class RcEconomy implements Economy {
     }
 
     @Override
+    public void set(UUID player, double amount) {
+
+        set(AccountType.PLAYER, player.toString(), amount);
+    }
+
+    @Override
     public void set(AccountType type, String accountName, double amount) {
 
         set(type, accountName, amount, BalanceSource.PLUGIN, null);
+    }
+
+    @Override
+    public void set(UUID player, double amount, BalanceSource source, String detail) {
+
+        set(AccountType.PLAYER, player.toString(), amount, source, detail);
     }
 
     @Override
@@ -201,7 +287,7 @@ public class RcEconomy implements Economy {
         List<TFlow> activities = plugin.getDatabase().find(TFlow.class)
                 .where()
                 .eq("account", account).setMaxRows(entries).findList();
-        if(type == AccountType.PLAYER) {
+        if (type == AccountType.PLAYER) {
             accountName = UUIDUtil.getNameFromUUID(accountName);
         }
         sender.sendMessage(ChatColor.GREEN + "Die letzten Kontobewegungen von "
