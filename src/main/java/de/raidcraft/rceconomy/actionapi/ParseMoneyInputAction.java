@@ -10,7 +10,7 @@ import de.raidcraft.rcconversations.api.conversation.Conversation;
 /**
  * @author Philip Urban
  */
-// TODO: needed?
+@Deprecated
 @ActionInformation(name = "PARSE_MONEY_INPUT")
 public class ParseMoneyInputAction extends AbstractAction {
 

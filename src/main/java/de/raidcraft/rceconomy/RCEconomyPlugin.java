@@ -10,6 +10,7 @@ import de.raidcraft.rcconversations.actions.ActionManager;
 import de.raidcraft.rceconomy.actionapi.HasEnoughMoneyAction;
 import de.raidcraft.rceconomy.actionapi.ModifyMoneyAction;
 import de.raidcraft.rceconomy.actionapi.ParseMoneyInputAction;
+import de.raidcraft.rceconomy.actionapi.SubstractMoneyAction;
 import de.raidcraft.rceconomy.commands.MoneyCommands;
 import de.raidcraft.rceconomy.listener.BalanceListener;
 import de.raidcraft.rceconomy.listener.PlayerListener;
@@ -53,6 +54,7 @@ public class RCEconomyPlugin extends BasePlugin {
         // TODO: use new system
         ActionManager.registerAction(new HasEnoughMoneyAction());
         ActionManager.registerAction(new ParseMoneyInputAction());
+        ActionManager.registerAction(new SubstractMoneyAction());
     }
 
     @Override

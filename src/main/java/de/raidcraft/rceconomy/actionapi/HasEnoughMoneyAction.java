@@ -13,6 +13,7 @@ import de.raidcraft.rcconversations.util.ParseString;
 /**
  * @author Philip Urban
  */
+@Deprecated
 @ActionInformation(name = "HAS_ENOUGH_MONEY")
 public class HasEnoughMoneyAction extends AbstractAction {
 
