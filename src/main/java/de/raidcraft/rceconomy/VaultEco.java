@@ -32,7 +32,6 @@ public class VaultEco implements net.milkbowl.vault.economy.Economy {
         hookIntoVault((Vault) vPlugin);
     }
 
-    // call method hookEconomy (String name, Class<? extends Economy> hookClass, ServicePriority priority, String...packages)
     private void hookIntoVault(Vault vault) {
 
         try {
