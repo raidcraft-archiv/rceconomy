@@ -37,10 +37,6 @@
 
     <repositories>
         <repository>
-            <id>vault-repo</id>
-            <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
-        </repository>
-        <repository>
             <id>raidcraft</id>
             <url>http://nexus.raid-craft.de/content/groups/public/</url>
         </repository>
@@ -50,8 +46,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>1.4.1</version>
-            <scope>provided</scope>
+            <version>${rc.version}</version>
         </dependency>
         <dependency>
             <groupId>de.raidcraft</groupId>
