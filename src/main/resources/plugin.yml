@@ -4,4 +4,4 @@ version: ${project.version}#${build.number}
 description: Provides money transfer.
 author: Strasse36, IDragonfire
 website: http://www.raid-craft.de
-depend: [RaidCraft-API, RCConversations, Vault]
+depend: [Vault, RaidCraft-API, RCConversations]
