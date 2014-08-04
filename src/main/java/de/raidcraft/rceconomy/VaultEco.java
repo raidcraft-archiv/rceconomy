@@ -29,11 +29,11 @@ public class VaultEco implements net.milkbowl.vault.economy.Economy {
             plugin.getLogger().severe("Vault not found - cannot inject");
             return;
         }
-        reflectionHook((Vault) vPlugin);
+        hookIntoVault((Vault) vPlugin);
     }
 
     // call method hookEconomy (String name, Class<? extends Economy> hookClass, ServicePriority priority, String...packages)
-    private void reflectionHook(Vault vault) {
+    private void hookIntoVault(Vault vault) {
 
         try {
             Bukkit.getServicesManager().register(net.milkbowl.vault.economy.Economy.class,
