@@ -144,6 +144,13 @@ public class RcEconomy implements Economy {
     }
 
     @Override
+    @Deprecated
+    public boolean hasEnough(String playerName, double amount) {
+
+        return hasEnough(UUIDUtil.convertPlayer(playerName), amount);
+    }
+
+    @Override
     public boolean hasEnough(UUID player, double amount) {
 
         return hasEnough(AccountType.PLAYER, player.toString(), amount);
@@ -154,6 +161,13 @@ public class RcEconomy implements Economy {
 
         double balance = getBalance(type, accountName);
         return amount <= 0 || balance >= amount;
+    }
+
+    @Override
+    @Deprecated
+    public void substract(String playerName, double amount) {
+
+        substract(UUIDUtil.convertPlayer(playerName), amount);
     }
 
     @Override
@@ -179,6 +193,13 @@ public class RcEconomy implements Economy {
                           double amount, BalanceSource source, String detail) {
 
         modify(type, accountName, -amount, source, detail);
+    }
+
+    @Override
+    @Deprecated
+    public void add(String playerName, double amount) {
+
+        add(UUIDUtil.convertPlayer(playerName), amount);
     }
 
     @Override
