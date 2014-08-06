@@ -144,13 +144,6 @@ public class RcEconomy implements Economy {
     }
 
     @Override
-    @Deprecated
-    public boolean hasEnough(String playerName, double amount) {
-
-        return hasEnough(UUIDUtil.convertPlayer(playerName), amount);
-    }
-
-    @Override
     public boolean hasEnough(UUID player, double amount) {
 
         return hasEnough(AccountType.PLAYER, player.toString(), amount);
@@ -161,13 +154,6 @@ public class RcEconomy implements Economy {
 
         double balance = getBalance(type, accountName);
         return amount <= 0 || balance >= amount;
-    }
-
-    @Override
-    @Deprecated
-    public void substract(String playerName, double amount) {
-
-        substract(UUIDUtil.convertPlayer(playerName), amount);
     }
 
     @Override
@@ -193,13 +179,6 @@ public class RcEconomy implements Economy {
                           double amount, BalanceSource source, String detail) {
 
         modify(type, accountName, -amount, source, detail);
-    }
-
-    @Override
-    @Deprecated
-    public void add(String playerName, double amount) {
-
-        add(UUIDUtil.convertPlayer(playerName), amount);
     }
 
     @Override
@@ -302,6 +281,13 @@ public class RcEconomy implements Economy {
     }
 
     @Override
+    public void printFlow(CommandSender sender, UUID playerId, int entries) {
+
+        printFlow(sender, AccountType.PLAYER, playerId.toString(), entries);
+    }
+
+
+    @Override
     public void printFlow(CommandSender sender, AccountType type, String accountName, int entries) {
 
         TAccount account = plugin.getAccount(type, accountName);
@@ -338,5 +324,111 @@ public class RcEconomy implements Economy {
         plugin.getDatabase().save(flow);
         RaidCraft.callEvent(new BalanceChangeEvent(source, detail,
                 account.getType(), account.getName(), amount));
+    }
+
+    // depracted
+    @Override
+    @Deprecated
+    public boolean hasEnough(String playerName, double amount) {
+
+        return hasEnough(UUIDUtil.convertPlayer(playerName), amount);
+    }
+
+    @Override
+    @Deprecated
+    public void add(String playerName, double amount) {
+
+        add(UUIDUtil.convertPlayer(playerName), amount);
+    }
+
+    @Override
+    @Deprecated
+    public void add(String playerName, double amount, BalanceSource source, String detail) {
+
+        add(UUIDUtil.convertPlayer(playerName), amount, source, detail);
+    }
+
+    @Override
+    @Deprecated
+    public void modify(String playerName, double amount) {
+
+        modify(UUIDUtil.convertPlayer(playerName), amount);
+    }
+
+    @Override
+    @Deprecated
+    public void modify(String playerName, double amount, BalanceSource source, String detail) {
+
+        modify(UUIDUtil.convertPlayer(playerName), amount, source, detail);
+    }
+
+    @Override
+    @Deprecated
+    public void set(String playerName, double amount) {
+
+        set(UUIDUtil.convertPlayer(playerName), amount);
+    }
+
+    @Override
+    @Deprecated
+    public void set(String playerName, double amount, BalanceSource source, String detail) {
+
+        set(UUIDUtil.convertPlayer(playerName), amount, source, detail);
+    }
+
+    @Override
+    @Deprecated
+    public void printFlow(CommandSender sender, String playerName, int entries) {
+
+        printFlow(sender, UUIDUtil.convertPlayer(playerName), entries);
+    }
+
+    @Override
+    @Deprecated
+    public void substract(String playerName, double amount) {
+
+        substract(UUIDUtil.convertPlayer(playerName), amount);
+    }
+
+    @Override
+    @Deprecated
+    public void substract(String playerName, double amount, BalanceSource source, String detail) {
+
+        substract(UUIDUtil.convertPlayer(playerName), amount, source, detail);
+    }
+
+    @Override
+    @Deprecated
+    public void createAccount(String playerName) {
+
+        createAccount(UUIDUtil.convertPlayer(playerName));
+    }
+
+    @Override
+    @Deprecated
+    public void deleteAccount(String playerName) {
+
+        deleteAccount(UUIDUtil.convertPlayer(playerName));
+    }
+
+    @Override
+    @Deprecated
+    public boolean accountExists(String playerName) {
+
+        return accountExists(UUIDUtil.convertPlayer(playerName));
+    }
+
+    @Override
+    @Deprecated
+    public double getBalance(String playerName) {
+
+        return getBalance(UUIDUtil.convertPlayer(playerName));
+    }
+
+    @Override
+    @Deprecated
+    public String getFormattedBalance(String playerName) {
+
+        return getFormattedBalance(UUIDUtil.convertPlayer(playerName));
     }
 }
