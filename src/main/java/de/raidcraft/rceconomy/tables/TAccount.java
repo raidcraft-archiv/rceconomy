@@ -13,21 +13,15 @@ import javax.persistence.Table;
 /**
  * @author Dragonfire
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "rceconomy_balance")
 public class TAccount {
-    @Getter
-    @Setter
     @Id
     private int id;
-    @Getter
-    @Setter
     private String name;
-    @Getter
-    @Setter
     private double balance;
-    @Getter
-    @Setter
     @Enumerated(EnumType.STRING)
     private AccountType type;
 }
