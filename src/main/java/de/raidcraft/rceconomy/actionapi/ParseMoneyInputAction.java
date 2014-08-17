@@ -1,4 +1,4 @@
-package de.raidcraft.rceconomy.conversations;
+package de.raidcraft.rceconomy.actionapi;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.rcconversations.api.action.AbstractAction;
@@ -10,6 +10,7 @@ import de.raidcraft.rcconversations.api.conversation.Conversation;
 /**
  * @author Philip Urban
  */
+@Deprecated
 @ActionInformation(name = "PARSE_MONEY_INPUT")
 public class ParseMoneyInputAction extends AbstractAction {
 
