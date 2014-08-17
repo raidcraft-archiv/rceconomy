@@ -41,7 +41,7 @@ public class RCEconomyPlugin extends BasePlugin {
         api = new RcEconomy(this, economyConfig);
         RaidCraft.setupEconomy(api);
 
-        registerCommands(MoneyCommands.class, getName());
+        registerCommands(MoneyCommands.class);
         registerEvents(new PlayerListener());
         registerEvents(new BalanceListener());
 
