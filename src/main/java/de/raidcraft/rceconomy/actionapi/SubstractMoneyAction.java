@@ -1,7 +1,6 @@
 package de.raidcraft.rceconomy.actionapi;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rcconversations.api.action.AbstractAction;
@@ -34,7 +33,7 @@ public class SubstractMoneyAction extends AbstractAction {
         }
 
         Economy economy = RaidCraft.getEconomy();
-        economy.substract(AccountType.PLAYER, conversation.getPlayer().getUniqueId().toString(),
+        economy.substract(conversation.getPlayer().getUniqueId(),
                 amount, BalanceSource.PLUGIN, reason);
     }
 }
