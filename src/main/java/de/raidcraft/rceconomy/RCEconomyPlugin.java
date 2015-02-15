@@ -2,8 +2,7 @@ package de.raidcraft.rceconomy;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
-import de.raidcraft.api.action.action.ActionException;
-import de.raidcraft.api.action.action.ActionFactory;
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rcconversations.actions.ActionManager;
@@ -45,11 +44,8 @@ public class RCEconomyPlugin extends BasePlugin {
         registerEvents(new PlayerListener());
         registerEvents(new BalanceListener());
 
-        try {
-            ActionFactory.getInstance().registerAction(this, "playermoney.modify", new ModifyMoneyAction(getApi()));
-        } catch (ActionException e) {
-            e.printStackTrace();
-        }
+        ActionAPI.register(this)
+                .action("playermoney.modify", new ModifyMoneyAction(getApi()));
 
         // TODO: use new system
         ActionManager.registerAction(new HasEnoughMoneyAction());
