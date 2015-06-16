@@ -22,10 +22,7 @@ public class BalanceListener implements Listener {
     @EventHandler
     public void onBalanceChange(BalanceChangeEvent event) {
 
-        // TODO: if city?
         if (event.getType() != AccountType.PLAYER) {
-            plugin.getLogger().warning("BalanceChangeEvent: no implementation for: " + event.getType()
-                    + "-" + event.getAccountName() + "-" + event.getSource() + "-" + event.getDetail());
             return;
         }
         Player player = Bukkit.getPlayer(UUID.fromString(event.getAccountName()));
