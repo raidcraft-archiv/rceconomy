@@ -45,7 +45,7 @@ public class RCEconomyPlugin extends BasePlugin {
         registerEvents(new BalanceListener());
 
         ActionAPI.register(this)
-                .action(new ModifyMoneyAction(getApi()));
+                .action(new ModifyMoneyAction());
 
         // TODO: use new system
         ActionManager.registerAction(new HasEnoughMoneyAction());

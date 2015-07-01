@@ -1,9 +1,9 @@
 package de.raidcraft.rceconomy.actionapi;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.api.economy.BalanceSource;
-import de.raidcraft.api.economy.Economy;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -12,12 +12,6 @@ import org.bukkit.entity.Player;
  */
 // TODO: needed?
 public class ModifyMoneyAction implements Action<Player> {
-    private Economy eco;
-
-    public ModifyMoneyAction(Economy eco) {
-
-        this.eco = eco;
-    }
 
     @Override
     @Information(
@@ -28,7 +22,7 @@ public class ModifyMoneyAction implements Action<Player> {
     public void accept(Player player, ConfigurationSection config) {
         String details = config.getString("flowdetail", "Conversation");
         double amount = config.getDouble("delta", 0.0);
-        eco.modify(AccountType.PLAYER, player.getUniqueId().toString(),
+        RaidCraft.getEconomy().modify(AccountType.PLAYER, player.getUniqueId().toString(),
                 amount, BalanceSource.PLUGIN, details);
     }
 }
