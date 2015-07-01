@@ -20,6 +20,11 @@ public class ModifyMoneyAction implements Action<Player> {
     }
 
     @Override
+    @Information(
+            value = "playermoney.modify",
+            desc = "Modifies the player money.",
+            conf = {"delta", "flowdetail"}
+    )
     public void accept(Player player, ConfigurationSection config) {
         String details = config.getString("flowdetail", "Conversation");
         double amount = config.getDouble("delta", 0.0);
