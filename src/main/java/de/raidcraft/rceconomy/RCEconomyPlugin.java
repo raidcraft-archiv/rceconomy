@@ -48,9 +48,9 @@ public class RCEconomyPlugin extends BasePlugin {
                 .action(new ModifyMoneyAction());
 
         // TODO: use new system
-        ActionManager.registerAction(new HasEnoughMoneyAction());
-        ActionManager.registerAction(new ParseMoneyInputAction());
-        ActionManager.registerAction(new SubstractMoneyAction());
+//        ActionManager.registerAction(new HasEnoughMoneyAction());
+//        ActionManager.registerAction(new ParseMoneyInputAction());
+//        ActionManager.registerAction(new SubstractMoneyAction());
 
         // inject Vault
         new VaultEco(this);
