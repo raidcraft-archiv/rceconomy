@@ -45,10 +45,5 @@
             <artifactId>raidcraft-api</artifactId>
             <version>1.6.3-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>de.raidcraft</groupId>
-            <artifactId>rcconversations</artifactId>
-            <version>1.2.0</version>
-        </dependency>
     </dependencies>
 </project>
