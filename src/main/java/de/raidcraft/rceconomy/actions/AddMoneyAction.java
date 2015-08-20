@@ -20,7 +20,7 @@ public class AddMoneyAction implements Action<Player> {
                     "amount: <1g2s33k>",
                     "details: [optional transaction details for the logs]"
             },
-            aliases = {"money.add", "playermoney.add"}
+            aliases = {"money.add", "playermoney.add", "economy.add"}
     )
     public void accept(Player player, ConfigurationSection config) {
 

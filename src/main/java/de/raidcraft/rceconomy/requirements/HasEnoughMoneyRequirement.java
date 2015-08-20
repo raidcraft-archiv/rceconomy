@@ -16,7 +16,7 @@ public class HasEnoughMoneyRequirement implements Requirement<Player> {
             value = "player.money.has",
             desc = "Checks if the player has enough money.",
             conf = {"amount: <1g2s33k>"},
-            aliases = {"HAS_ENOUGH_MONEY", "player.has-enough-money", "player.money.has-enough"}
+            aliases = {"HAS_ENOUGH_MONEY", "player.has-enough-money", "player.money.has-enough", "economy.has-enough"}
     )
     public boolean test(Player player, ConfigurationSection config) {
 
