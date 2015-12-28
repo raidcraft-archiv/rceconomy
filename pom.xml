@@ -22,7 +22,7 @@
     <name>RCEconomy</name>
 
     <scm>
-        <developerConnection>scm:git:ssh://git@git.raid-craft.de:22109/raid-craft-de/rceconomy.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@git.raid-craft.de:2222/raid-craft-de/rceconomy.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -35,7 +35,7 @@
     <repositories>
         <repository>
             <id>raidcraft</id>
-            <url>http://repo.raid-craft.eu/artifactory/repo/</url>
+            <url>http://repo.raid-craft.de/artifactory/repo/</url>
         </repository>
     </repositories>
 
