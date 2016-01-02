@@ -5,12 +5,14 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.api.economy.Economy;
-import de.raidcraft.rceconomy.actions.AddMoneyAction;
-import de.raidcraft.rceconomy.actions.RemoveMoneyAction;
+import de.raidcraft.rcconversations.actions.ActionManager;
+import de.raidcraft.rceconomy.actionapi.HasEnoughMoneyAction;
+import de.raidcraft.rceconomy.actionapi.ModifyMoneyAction;
+import de.raidcraft.rceconomy.actionapi.ParseMoneyInputAction;
+import de.raidcraft.rceconomy.actionapi.SubstractMoneyAction;
 import de.raidcraft.rceconomy.commands.MoneyCommands;
 import de.raidcraft.rceconomy.listener.BalanceListener;
 import de.raidcraft.rceconomy.listener.PlayerListener;
-import de.raidcraft.rceconomy.requirements.HasEnoughMoneyRequirement;
 import de.raidcraft.rceconomy.tables.TAccount;
 import de.raidcraft.rceconomy.tables.TFlow;
 import lombok.Getter;
@@ -42,10 +44,13 @@ public class RCEconomyPlugin extends BasePlugin {
         registerEvents(new PlayerListener());
         registerEvents(new BalanceListener());
 
-        ActionAPI.register(this).global()
-                .requirement(new HasEnoughMoneyRequirement())
-                .action(new RemoveMoneyAction())
-                .action(new AddMoneyAction());
+        ActionAPI.register(this)
+                .action(new ModifyMoneyAction());
+
+        // TODO: use new system
+        ActionManager.registerAction(new HasEnoughMoneyAction());
+        ActionManager.registerAction(new ParseMoneyInputAction());
+        ActionManager.registerAction(new SubstractMoneyAction());
 
         // inject Vault
         new VaultEco(this);
