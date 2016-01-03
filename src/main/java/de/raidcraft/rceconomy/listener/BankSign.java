@@ -51,7 +51,7 @@ public class BankSign implements Listener {
     public void onSignCreate(SignChangeEvent event) {
 
         // Check sign tag
-        if(!SignUtil.strip(event.getLine(0)).equals("[" + BANK_SIGN_TAG + "]"))
+        if(!SignUtil.strip(event.getLine(0)).equals(BANK_SIGN_TAG))
         {
             return;
         }
@@ -87,6 +87,9 @@ public class BankSign implements Listener {
         for(int i = 0; i < 4; i ++) {
             event.setLine(i, formattedLines[i]);
         }
+
+        event.getPlayer().sendMessage(
+                ChatColor.GREEN + "Das Bank Schild für das Item '" + ItemUtils.getFriendlyName(material) + "' wurde erfolgreich erstellt!");
     }
 
     @EventHandler
@@ -108,7 +111,7 @@ public class BankSign implements Listener {
         }
 
         // Check sign tag
-        if(!SignUtil.strip(sign.getLine(0)).equals("[" + BANK_SIGN_TAG + "]"))
+        if(!SignUtil.strip(sign.getLine(0)).equals(BANK_SIGN_TAG))
         {
             return;
         }
