@@ -96,7 +96,8 @@ public class BankSign implements Listener {
     @EventHandler
     public void onSignClick(PlayerInteractEvent event) {
 
-        if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+        if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_AIR) ||
+                event.getPlayer().isSneaking()) {
             return;
         }
 
