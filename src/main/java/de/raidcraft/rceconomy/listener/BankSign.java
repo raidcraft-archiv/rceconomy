@@ -97,6 +97,10 @@ public class BankSign implements Listener {
         }
 
         // Check if sign
+        if(!SignUtil.isSign(event.getClickedBlock())) {
+            return;
+        }
+
         Sign sign = SignUtil.getSign(event.getClickedBlock());
         if(sign == null)
         {
