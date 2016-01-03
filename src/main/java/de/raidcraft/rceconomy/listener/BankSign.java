@@ -52,7 +52,7 @@ public class BankSign implements Listener {
 
         // Check sign tag
         if(!SignUtil.strip(event.getLine(0)).equals(BANK_SIGN_TAG))
-        {
+            {
             return;
         }
 
@@ -76,6 +76,7 @@ public class BankSign implements Listener {
         double amount = 0;
         try {
             amount = Double.parseDouble(event.getLine(3));
+            amount /= 100D;
         } catch(Exception e) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "In der letzten Zeile muss der Ankaufspreis in Kupfer angegeben sein!");
