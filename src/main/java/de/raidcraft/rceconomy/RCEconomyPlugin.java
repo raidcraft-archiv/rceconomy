@@ -12,6 +12,7 @@ import de.raidcraft.rceconomy.actionapi.ParseMoneyInputAction;
 import de.raidcraft.rceconomy.actionapi.SubstractMoneyAction;
 import de.raidcraft.rceconomy.commands.MoneyCommands;
 import de.raidcraft.rceconomy.listener.BalanceListener;
+import de.raidcraft.rceconomy.listener.BankSign;
 import de.raidcraft.rceconomy.listener.PlayerListener;
 import de.raidcraft.rceconomy.tables.TAccount;
 import de.raidcraft.rceconomy.tables.TFlow;
@@ -43,11 +44,11 @@ public class RCEconomyPlugin extends BasePlugin {
         registerCommands(MoneyCommands.class);
         registerEvents(new PlayerListener());
         registerEvents(new BalanceListener());
+        registerEvents(new BankSign());
 
         ActionAPI.register(this)
                 .action(new ModifyMoneyAction());
 
-        // TODO: use new system
         ActionManager.registerAction(new HasEnoughMoneyAction());
         ActionManager.registerAction(new ParseMoneyInputAction());
         ActionManager.registerAction(new SubstractMoneyAction());
