@@ -27,7 +27,7 @@ public class BankSign implements Listener {
         String[] lines = new String[4];
 
         lines[0] = ChatColor.YELLOW + "[" + ChatColor.GREEN + BANK_SIGN_TAG + ChatColor.YELLOW + "]";
-        lines[3] = RaidCraft.getComponent(RCEconomyPlugin.class).getApi().getFormattedAmount(amount);
+        lines[3] = ChatColor.BLACK + RaidCraft.getComponent(RCEconomyPlugin.class).getApi().getFormattedAmount(amount);
 
         // Material colors
         switch(material) {
@@ -65,7 +65,7 @@ public class BankSign implements Listener {
 
         // Get item
         Material material = null;
-        material = ItemUtils.getItem(event.getLine(2));
+        material = ItemUtils.getItem(SignUtil.strip(event.getLine(2)));
         if(material == null) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "In der vorletzten Zeile muss der Materialname/ID angegeben sein!");
@@ -126,7 +126,7 @@ public class BankSign implements Listener {
 
         // Get item
         Material material = null;
-        material = ItemUtils.getItem(sign.getLine(2));
+        material = ItemUtils.getItem(SignUtil.strip(sign.getLine(2)));
         if(material == null) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Dieses Bankschild ist defekt (unbekanntes Material)!");
