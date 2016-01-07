@@ -1,6 +1,7 @@
 package de.raidcraft.rceconomy.tables;
 
 import de.raidcraft.api.economy.BalanceSource;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,27 +15,18 @@ import java.util.Date;
  * @author Dragonfire
  */
 
+@Data
 @Entity
 @Table(name = "rceconomy_flow")
 public class TFlow {
-    @Getter
-    @Setter
+
     @Id
     private int id;
-    @Getter
-    @Setter
+
     private double amount;
-    @Getter
-    @Setter
     private BalanceSource source;
-    @Getter
-    @Setter
     public String detail;
-    @Getter
-    @Setter
     public Date date;
-    @Getter
-    @Setter
     @ManyToOne
     public TAccount account;
 }

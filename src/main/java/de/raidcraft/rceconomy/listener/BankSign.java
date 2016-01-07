@@ -51,8 +51,7 @@ public class BankSign implements Listener {
     public void onSignCreate(SignChangeEvent event) {
 
         // Check sign tag
-        if(!SignUtil.strip(event.getLine(0)).equalsIgnoreCase(BANK_SIGN_TAG))
-            {
+        if(!SignUtil.strip(event.getLine(0)).equalsIgnoreCase(BANK_SIGN_TAG)) {
             return;
         }
 
