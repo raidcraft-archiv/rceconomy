@@ -41,7 +41,7 @@ public class MaterialPricesMenu {
 
         final int totalPages;
         List<TBankMaterial> bankMaterials = BankMaterialManager.get().getAllMaterials();
-        if(bankMaterials != null) {
+        if(bankMaterials != null && !bankMaterials.isEmpty()) {
             totalPages = (int)Math.ceil((double)bankMaterials.size() / (double)MenuUtil.MAX_SLOTS_PER_MENU);
         } else {
             totalPages = 1;
