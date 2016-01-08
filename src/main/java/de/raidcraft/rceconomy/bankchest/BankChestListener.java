@@ -266,10 +266,14 @@ public class BankChestListener implements Listener {
         // Sell items
         double value = BankChestManager.get().getContentValue(event.getPlayer().getUniqueId(), chest, true);
         if(value > 0) {
+            BankChestManager.get().updateEmptyingDate(sign.getLocation());
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.GREEN + "Deine Bankkiste wurde geleert (" + economy.getFormattedAmount(value)+ ChatColor.GREEN + ")" + "!");
             return;
         }
+        event.setCancelled(true);
+        event.getPlayer().sendMessage(ChatColor.GREEN + "Der Inhalt deiner Bankkiste ist wertlos!");
+        return;
     }
 
     @EventHandler

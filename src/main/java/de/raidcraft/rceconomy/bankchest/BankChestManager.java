@@ -55,6 +55,13 @@ public class BankChestManager {
         return chests;
     }
 
+    public TBankChest getChest(Location location) {
+
+        TBankChest bankChest = plugin.getDatabase().find(TBankChest.class).where()
+                .eq("x", location.getBlockX()).eq("y", location.getBlockY()).eq("z", location.getBlockZ()).findUnique();
+        return bankChest;
+    }
+
     public void unregister(int id) {
 
         TBankChest bankChest = plugin.getDatabase().find(TBankChest.class, id);
@@ -75,7 +82,7 @@ public class BankChestManager {
         bankChest.setZ(signLocation.getBlockZ());
         plugin.getDatabase().save(bankChest);
 
-        return getChest(uuid, type);
+        return getChest(signLocation);
     }
 
     public boolean isCooldownOver(TBankChest bankChest) {
@@ -137,5 +144,13 @@ public class BankChestManager {
             }
         }
         return value;
+    }
+
+    public void updateEmptyingDate(Location location) {
+
+        TBankChest bankChest = getChest(location);
+        if(bankChest == null) return;
+        bankChest.setLastEmptying(new Date(System.currentTimeMillis()));
+        plugin.getDatabase().update(bankChest);
     }
 }
