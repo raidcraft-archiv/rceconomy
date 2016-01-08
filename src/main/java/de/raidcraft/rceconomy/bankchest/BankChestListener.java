@@ -1,6 +1,8 @@
 package de.raidcraft.rceconomy.bankchest;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.economy.BalanceSource;
+import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rceconomy.tables.TBankChest;
 import de.raidcraft.util.SignUtil;
 import de.raidcraft.util.UUIDUtil;
@@ -42,7 +44,7 @@ public class BankChestListener implements Listener {
             lines[1] = ChatColor.AQUA.toString() + bankChest.getId() + "-" + UUIDUtil.getNameFromUUID(bankChest.getPlayerId());
         }
         lines[2] = ChatColor.BLACK + "Aktueller Wert:";
-        lines[3] = RaidCraft.getEconomy().getFormattedAmount(BankChestManager.get().getContentValue(chest, false));
+        lines[3] = RaidCraft.getEconomy().getFormattedAmount(BankChestManager.get().getContentValue(null, chest, false));
 
         return lines;
     }
@@ -256,11 +258,13 @@ public class BankChestListener implements Listener {
             return;
         }
 
+        Economy economy = RaidCraft.getEconomy();
+
         // Sell items
-        double value = BankChestManager.get().getContentValue(chest, true);
+        double value = BankChestManager.get().getContentValue(event.getPlayer().getUniqueId(), chest, true);
         if(value > 0) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.GREEN + "Deine Bankkiste wurde geleert!");
+            event.getPlayer().sendMessage(ChatColor.GREEN + "Deine Bankkiste wurde geleert (" + economy.getFormattedAmount(value)+ ChatColor.GREEN + ")" + "!");
             return;
         }
     }

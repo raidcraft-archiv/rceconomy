@@ -1,9 +1,12 @@
 package de.raidcraft.rceconomy.bankchest;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.economy.BalanceSource;
+import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
 import de.raidcraft.rceconomy.tables.TBankChest;
 import de.raidcraft.rceconomy.tables.TBankMaterial;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
@@ -100,9 +103,11 @@ public class BankChestManager {
         return new Date(next);
     }
 
-    public double getContentValue(Chest chest, boolean remove) {
+    public double getContentValue(UUID uuid, Chest chest, boolean buy) {
 
         double value = 0;
+
+        Economy economy = RaidCraft.getEconomy();
 
         ItemStack[] content = chest.getInventory().getContents().clone();
         for(ItemStack itemStack : content) {
@@ -122,11 +127,12 @@ public class BankChestManager {
                 continue;
             }
 
-            value += bankMaterial.getPriceBuy();
+            double thisValue = bankMaterial.getPriceBuy() * itemStack.getAmount();
+            value += thisValue;
 
-            if(remove) {
-
+            if(buy) {
                 chest.getInventory().remove(itemStack);
+                economy.add(uuid, thisValue, BalanceSource.SELL_ITEM, itemStack.getAmount() + "x " + itemStack.getType().name() + " verkauft.");
             }
         }
         return value;
