@@ -88,7 +88,7 @@ public class MenuUtil {
         ItemStack itemStack = new ItemStack(material);
         ItemUtils.setDisplayName(itemStack, ItemUtils.getFriendlyName(material));
 
-        ChatColor buy = ChatColor.RESET;
+        ChatColor buy = ChatColor.GOLD;
         if(!bankMaterial.isBuy()) {
             buy = ChatColor.STRIKETHROUGH;
         }
