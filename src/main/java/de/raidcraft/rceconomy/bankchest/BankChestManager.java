@@ -3,8 +3,13 @@ package de.raidcraft.rceconomy.bankchest;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
 import de.raidcraft.rceconomy.tables.TBankChest;
+import de.raidcraft.rceconomy.tables.TBankMaterial;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Chest;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,8 +60,75 @@ public class BankChestManager {
         plugin.getDatabase().delete(bankChest);
     }
 
-    public TBankChest register(Chest chest, UUID uuid) {
+    public TBankChest register(Location signLocation, BankChestType type, UUID uuid) {
+
+        TBankChest bankChest = new TBankChest();
+        bankChest.setPlayerId(uuid);
+        bankChest.setLastEmptying(new Date(0));
+        bankChest.setType(type.name());
+        bankChest.setX(signLocation.getBlockX());
+        bankChest.setY(signLocation.getBlockY());
+        bankChest.setZ(signLocation.getBlockZ());
+        plugin.getDatabase().save(bankChest);
 
         return null;
+    }
+
+    public boolean isCooldownOver(TBankChest bankChest) {
+
+        if(bankChest == null) {
+            return false;
+        }
+
+        long last = bankChest.getLastEmptying().getTime();
+        long next = last + (plugin.getConfig().bankChestDelayHours * 60 * 60 * 1000);
+
+        if(System.currentTimeMillis() < next) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public Date getNextPossibleEmptying(TBankChest bankChest) {
+
+        if(bankChest == null) {
+            return null;
+        }
+
+        long next = bankChest.getLastEmptying().getTime() + (plugin.getConfig().bankChestDelayHours * 60 * 60 * 1000);
+        return new Date(next);
+    }
+
+    public double getContentValue(Chest chest, boolean remove) {
+
+        double value = 0;
+
+        ItemStack[] content = chest.getInventory().getContents().clone();
+        for(ItemStack itemStack : content) {
+
+            // Empty slot
+            if(itemStack == null || itemStack.getType() == Material.AIR) {
+                continue;
+            }
+
+            // Get material
+            TBankMaterial bankMaterial = BankMaterialManager.get().getMaterial(itemStack.getType());
+            if(bankMaterial == null) {
+                continue;
+            }
+
+            if(!bankMaterial.isBuy()) {
+                continue;
+            }
+
+            value += bankMaterial.getPriceBuy();
+
+            if(remove) {
+
+                chest.getInventory().remove(itemStack);
+            }
+        }
+        return value;
     }
 }

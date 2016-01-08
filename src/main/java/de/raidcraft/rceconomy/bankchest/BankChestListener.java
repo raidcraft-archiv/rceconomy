@@ -15,6 +15,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Created by Philip on 07.01.2016.
  */
@@ -25,11 +30,6 @@ public class BankChestListener implements Listener {
     private static String SINGLE_PERMISSION = "bankchest.use.single";
     private static String DOUBLE_PERMISSION = "bankchest.use.double";
     private static String ADMIN_PERMISSION = "bankchest.admin";
-
-    private double getChestValue(Chest chest) {
-        //TODO
-        return 0;
-    }
 
     private String[] formatSign(Chest chest, TBankChest bankChest) {
         String[] lines = new String[4];
@@ -42,7 +42,7 @@ public class BankChestListener implements Listener {
             lines[1] = ChatColor.AQUA.toString() + bankChest.getId() + "-" + UUIDUtil.getNameFromUUID(bankChest.getPlayerId());
         }
         lines[2] = ChatColor.BLACK + "Aktueller Wert:";
-        lines[3] = RaidCraft.getEconomy().getFormattedAmount(getChestValue(chest));
+        lines[3] = RaidCraft.getEconomy().getFormattedAmount(BankChestManager.get().getContentValue(chest, false));
 
         return lines;
     }
@@ -149,6 +149,7 @@ public class BankChestListener implements Listener {
         // Owner
         String owner = sign.getLine(2);
 
+        BankChestManager.BankChestType bankChestType;
 
         // Set new owner
         if(event.getPlayer().isSneaking()) {
@@ -177,6 +178,7 @@ public class BankChestListener implements Listener {
 
             // Double chest
             if(chest instanceof DoubleChest) {
+                bankChestType = BankChestManager.BankChestType.DOUBLE_CHEST;
                 if(!event.getPlayer().hasPermission(ADMIN_PERMISSION) &&
                         !event.getPlayer().hasPermission(DOUBLE_PERMISSION)) {
                     event.setCancelled(true);
@@ -192,6 +194,7 @@ public class BankChestListener implements Listener {
 
             // Single chest
             else {
+                bankChestType = BankChestManager.BankChestType.SINGLE_CHEST;
                 if(!event.getPlayer().hasPermission(ADMIN_PERMISSION) &&
                         !event.getPlayer().hasPermission(SINGLE_PERMISSION)){
                     event.setCancelled(true);
@@ -205,7 +208,7 @@ public class BankChestListener implements Listener {
                 }
             }
 
-            TBankChest playerChest = BankChestManager.get().register(chest, event.getPlayer().getUniqueId());
+            TBankChest playerChest = BankChestManager.get().register(sign.getLocation(), bankChestType, event.getPlayer().getUniqueId());
             if(playerChest == null) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(ChatColor.RED + "Es ist ein Fehler beim Zuordnen der Bankkiste aufgetreten!");
@@ -243,6 +246,22 @@ public class BankChestListener implements Listener {
             sign.setLine(i, formattedLines[i]);
         }
 
-        //TODO: Sell items
+        // Check delay
+        if(!BankChestManager.get().isCooldownOver(playerChest)) {
+            DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+            Date date = BankChestManager.get().getNextPossibleEmptying(playerChest);
+            String nextDate = df.format(date);
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED + "Die nächste Leerung ist erst wieder am " + nextDate + " möglich!");
+            return;
+        }
+
+        // Sell items
+        double value = BankChestManager.get().getContentValue(chest, true);
+        if(value > 0) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.GREEN + "Deine Bankkiste wurde geleert!");
+            return;
+        }
     }
 }

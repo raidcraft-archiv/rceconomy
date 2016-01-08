@@ -3,6 +3,8 @@ package de.raidcraft.rceconomy;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.action.ActionAPI;
+import de.raidcraft.api.config.ConfigurationBase;
+import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rcconversations.actions.ActionManager;
@@ -28,6 +30,7 @@ import java.util.List;
  */
 public class RCEconomyPlugin extends BasePlugin {
 
+    LocalConfiguration config;
     @Getter
     private EconomyConfig economyConfig;
     @Getter
@@ -90,6 +93,22 @@ public class RCEconomyPlugin extends BasePlugin {
             e.printStackTrace();
             getLogger().warning("Installing database for " + getDescription().getName() + " due to first time usage");
             installDDL();
+        }
+    }
+
+    @Override
+    public LocalConfiguration getConfig() {
+        return config;
+    }
+
+    public class LocalConfiguration extends ConfigurationBase<RCEconomyPlugin> {
+
+        @Setting("bank-chest-delay-hours")
+        public int bankChestDelayHours = 168;
+
+        public LocalConfiguration(RCEconomyPlugin plugin) {
+
+            super(plugin, "config.yml");
         }
     }
 }

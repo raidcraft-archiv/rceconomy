@@ -1,8 +1,6 @@
 package de.raidcraft.rceconomy.tables;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,16 +14,15 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "rceconomy_bankchests")
-public class TBankChest {
+@Table(name = "rceconomy_bank_materials")
+public class TBankMaterial {
 
     @Id
     private int id;
 
-    public UUID playerId;
-    public String type;
-    public Date lastEmptying;
-    public int x;
-    public int y;
-    public int z;
+    public String material;
+    public double priceBuy;
+    public double priceSell;
+    public boolean buy;
+    public boolean sell;
 }
