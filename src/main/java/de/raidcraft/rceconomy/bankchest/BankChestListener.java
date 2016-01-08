@@ -37,11 +37,11 @@ public class BankChestListener implements Listener {
         String[] lines = new String[4];
 
         lines[0] = ChatColor.YELLOW + "[" + ChatColor.GREEN + BANK_CHEST_TAG + ChatColor.YELLOW + "]";
-        if(bankChest == null) {
+        if(bankChest != null) {
             lines[1] = ChatColor.AQUA.toString() + bankChest.getId() + ChatColor.WHITE +
                     "-" + ChatColor.AQUA + UUIDUtil.getNameFromUUID(bankChest.getPlayerId());
         } else {
-            lines[1] = ChatColor.AQUA.toString() + bankChest.getId() + "-" + UUIDUtil.getNameFromUUID(bankChest.getPlayerId());
+            lines[1] = ChatColor.AQUA.toString() + FREE_TAG;
         }
         lines[2] = ChatColor.BLACK + "Aktueller Wert:";
         lines[3] = RaidCraft.getEconomy().getFormattedAmount(BankChestManager.get().getContentValue(null, chest, false));
