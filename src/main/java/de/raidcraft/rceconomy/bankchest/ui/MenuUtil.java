@@ -94,7 +94,7 @@ public class MenuUtil {
         }
 
         ChatColor sell = ChatColor.RESET;
-        if(!bankMaterial.isBuy()) {
+        if(!bankMaterial.isSell()) {
             sell = ChatColor.STRIKETHROUGH;
         }
 
