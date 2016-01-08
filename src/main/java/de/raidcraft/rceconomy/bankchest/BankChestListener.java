@@ -370,13 +370,16 @@ public class BankChestListener implements Listener {
 
         // Check sign
         Location location = null;
+        Sign sign = null;
         if((sign1 != null && !SignUtil.strip(sign1.getLine(0)).equalsIgnoreCase(BANK_CHEST_TAG))) {
             location = sign1.getLocation();
+            sign = sign1;
         }
-        if((sign2 != null && !SignUtil.strip(sign2.getLine(0)).equalsIgnoreCase(BANK_CHEST_TAG))) {
+        else if((sign2 != null && !SignUtil.strip(sign2.getLine(0)).equalsIgnoreCase(BANK_CHEST_TAG))) {
             location = sign2.getLocation();
+            sign = sign2;
         }
-        if(location == null) {
+        else if(location == null || sign == null) {
             return;
         }
 
@@ -386,7 +389,11 @@ public class BankChestListener implements Listener {
         }
 
         // Update sign
-        formatSign((Chest) event.getInventory().getHolder(), tBankChest);
+        String[] formattedLines = formatSign((Chest) event.getInventory().getHolder(), tBankChest);
+        for(int i = 0; i < 4; i ++) {
+            sign.setLine(i, formattedLines[i]);
+        }
+        sign.update();
     }
 
     private Sign getSign(Block chestBlock2) {
