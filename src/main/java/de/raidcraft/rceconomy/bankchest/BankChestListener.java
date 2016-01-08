@@ -344,37 +344,25 @@ public class BankChestListener implements Listener {
 
             // Find second chest block
             do {
-                Block signBlock2;
+                Block chestBlock2;
 
-                signBlock2 = doubleChest.getLocation().getBlock().getRelative(1, 0, 0);
-                if (SignUtil.isSign(signBlock2)) {
-                    if(SignUtil.isSign(signBlock2)) {
-                        sign2 = SignUtil.getSign(signBlock2);
-                    }
+                chestBlock2 = doubleChest.getLocation().getBlock().getRelative(1, 0, 0);
+                if ((sign2 = getSign(chestBlock2)) != null) {
                     break;
                 }
 
-                signBlock2 = doubleChest.getLocation().getBlock().getRelative(-1, 0, 0);
-                if (SignUtil.isSign(signBlock2)) {
-                    if(SignUtil.isSign(signBlock2)) {
-                        sign2 = SignUtil.getSign(signBlock2);
-                    }
+                chestBlock2 = doubleChest.getLocation().getBlock().getRelative(-1, 0, 0);
+                if ((sign2 = getSign(chestBlock2)) != null) {
                     break;
                 }
 
-                signBlock2 = doubleChest.getLocation().getBlock().getRelative(0, 0, 1);
-                if (SignUtil.isSign(signBlock2)) {
-                    if(SignUtil.isSign(signBlock2)) {
-                        sign2 = SignUtil.getSign(signBlock2);
-                    }
+                chestBlock2 = doubleChest.getLocation().getBlock().getRelative(0, 0, 1);
+                if ((sign2 = getSign(chestBlock2)) != null) {
                     break;
                 }
 
-                signBlock2 = doubleChest.getLocation().getBlock().getRelative(0, 0, -1);
-                if (SignUtil.isSign(signBlock2)) {
-                    if(SignUtil.isSign(signBlock2)) {
-                        sign2 = SignUtil.getSign(signBlock2);
-                    }
+                chestBlock2 = doubleChest.getLocation().getBlock().getRelative(0, 0, -1);
+                if ((sign2 = getSign(chestBlock2)) != null) {
                     break;
                 }
             } while(false);
@@ -398,6 +386,19 @@ public class BankChestListener implements Listener {
         }
 
         // Update sign
-        formatSign((Chest)event.getInventory().getHolder(), tBankChest);
+        formatSign((Chest) event.getInventory().getHolder(), tBankChest);
+    }
+
+    private Sign getSign(Block chestBlock2) {
+
+        if(!(chestBlock2 instanceof Chest)) {
+            return null;
+        }
+
+        Block signBlock = chestBlock2.getRelative(0, 1, 0);
+        if(SignUtil.isSign(signBlock)) {
+            return SignUtil.getSign(signBlock);
+        }
+        return null;
     }
 }
