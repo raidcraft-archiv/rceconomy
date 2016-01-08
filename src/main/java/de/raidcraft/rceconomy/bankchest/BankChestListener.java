@@ -179,7 +179,7 @@ public class BankChestListener implements Listener {
             }
 
             // Double chest
-            if(chest instanceof DoubleChest) {
+            if(chest.getInventory().getHolder() instanceof DoubleChest) {
                 bankChestType = BankChestManager.BankChestType.DOUBLE_CHEST;
                 if(!event.getPlayer().hasPermission(ADMIN_PERMISSION) &&
                         !event.getPlayer().hasPermission(DOUBLE_PERMISSION)) {
