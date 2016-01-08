@@ -93,7 +93,7 @@ public class MenuUtil {
             buy = ChatColor.STRIKETHROUGH;
         }
 
-        ChatColor sell = ChatColor.RESET;
+        ChatColor sell = ChatColor.GOLD;
         if(!bankMaterial.isSell()) {
             sell = ChatColor.STRIKETHROUGH;
         }
