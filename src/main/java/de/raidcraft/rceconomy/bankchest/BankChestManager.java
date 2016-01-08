@@ -74,7 +74,7 @@ public class BankChestManager {
         bankChest.setZ(signLocation.getBlockZ());
         plugin.getDatabase().save(bankChest);
 
-        return null;
+        return plugin.getDatabase().find(TBankChest.class).where().eq("player_id", uuid).findUnique();
     }
 
     public boolean isCooldownOver(TBankChest bankChest) {
