@@ -10,6 +10,7 @@ import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Date;
@@ -117,13 +118,13 @@ public class BankChestManager {
         return new Date(next);
     }
 
-    public double getContentValue(UUID uuid, Chest chest, boolean buy) {
+    public double getContentValue(UUID uuid, Inventory inventory, boolean buy) {
 
         double value = 0;
 
         Economy economy = RaidCraft.getEconomy();
 
-        ItemStack[] content = chest.getInventory().getContents().clone();
+        ItemStack[] content = inventory.getContents().clone();
         for(ItemStack itemStack : content) {
 
             // Empty slot
@@ -145,7 +146,7 @@ public class BankChestManager {
             value += thisValue;
 
             if(buy) {
-                chest.getInventory().remove(itemStack);
+                inventory.remove(itemStack);
                 economy.add(uuid, thisValue, BalanceSource.SELL_ITEM, itemStack.getAmount() + "x " + itemStack.getType().name() + " verkauft.");
             }
         }

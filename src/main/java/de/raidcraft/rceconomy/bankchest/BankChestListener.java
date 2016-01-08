@@ -19,6 +19,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,7 +37,7 @@ public class BankChestListener implements Listener {
     private static String DOUBLE_PERMISSION = "bankchest.use.double";
     private static String ADMIN_PERMISSION = "bankchest.admin";
 
-    private String[] formatSign(Chest chest, TBankChest bankChest) {
+    private String[] formatSign(Inventory inventory, TBankChest bankChest) {
         String[] lines = new String[4];
 
         lines[0] = ChatColor.YELLOW + "[" + ChatColor.GREEN + BANK_CHEST_TAG + ChatColor.YELLOW + "]";
@@ -47,7 +48,7 @@ public class BankChestListener implements Listener {
             lines[1] = ChatColor.AQUA.toString() + FREE_TAG;
         }
         lines[2] = ChatColor.BLACK + "Aktueller Wert:";
-        lines[3] = RaidCraft.getEconomy().getFormattedAmount(BankChestManager.get().getContentValue(null, chest, false));
+        lines[3] = RaidCraft.getEconomy().getFormattedAmount(BankChestManager.get().getContentValue(null, inventory, false));
 
         return lines;
     }
@@ -100,7 +101,7 @@ public class BankChestListener implements Listener {
         chest = (Chest)block.getState();
 
         // Format lines
-        String[] formattedLines = formatSign(chest, null);
+        String[] formattedLines = formatSign(chest.getInventory(), null);
         for(int i = 0; i < 4; i ++) {
             event.setLine(i, formattedLines[i]);
         }
@@ -219,7 +220,7 @@ public class BankChestListener implements Listener {
             }
 
             // Format lines
-            String[] formattedLines = formatSign(chest, playerChest);
+            String[] formattedLines = formatSign(chest.getInventory(), playerChest);
             for(int i = 0; i < 4; i ++) {
                 sign.setLine(i, formattedLines[i]);
             }
@@ -240,7 +241,7 @@ public class BankChestListener implements Listener {
         TBankChest playerChest = BankChestManager.get().getChest(getOwnerId(owner));
         if(playerChest == null) {
             // Format lines
-            String[] formattedLines = formatSign(chest, null);
+            String[] formattedLines = formatSign(chest.getInventory(), null);
             for(int i = 0; i < 4; i ++) {
                 sign.setLine(i, formattedLines[i]);
             }
@@ -253,7 +254,7 @@ public class BankChestListener implements Listener {
         }
 
         // Format lines
-        String[] formattedLines = formatSign(chest, playerChest);
+        String[] formattedLines = formatSign(chest.getInventory(), playerChest);
         for(int i = 0; i < 4; i ++) {
             sign.setLine(i, formattedLines[i]);
         }
@@ -272,7 +273,7 @@ public class BankChestListener implements Listener {
         Economy economy = RaidCraft.getEconomy();
 
         // Sell items
-        double value = BankChestManager.get().getContentValue(event.getPlayer().getUniqueId(), chest, true);
+        double value = BankChestManager.get().getContentValue(event.getPlayer().getUniqueId(), chest.getInventory(), true);
         if(value > 0) {
             BankChestManager.get().updateEmptyingDate(sign.getLocation());
             event.setCancelled(true);
@@ -389,7 +390,7 @@ public class BankChestListener implements Listener {
         }
 
         // Update sign
-        String[] formattedLines = formatSign((Chest) event.getInventory().getHolder(), tBankChest);
+        String[] formattedLines = formatSign(event.getInventory(), tBankChest);
         for(int i = 0; i < 4; i ++) {
             sign.setLine(i, formattedLines[i]);
         }
