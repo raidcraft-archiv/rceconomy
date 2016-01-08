@@ -160,12 +160,10 @@ public class BankChestListener implements Listener {
             // Get player chests
             TBankChest singleChest = null;
             TBankChest doubleChest = null;
-            if(!event.getPlayer().hasPermission(ADMIN_PERMISSION)) {
-                singleChest = BankChestManager.get().getChest(event.getPlayer().getUniqueId(),
-                        BankChestManager.BankChestType.SINGLE_CHEST);
-                doubleChest = BankChestManager.get().getChest(event.getPlayer().getUniqueId(),
-                        BankChestManager.BankChestType.DOUBLE_CHEST);
-            }
+            singleChest = BankChestManager.get().getChest(event.getPlayer().getUniqueId(),
+                    BankChestManager.BankChestType.SINGLE_CHEST);
+            doubleChest = BankChestManager.get().getChest(event.getPlayer().getUniqueId(),
+                    BankChestManager.BankChestType.DOUBLE_CHEST);
 
             if(!owner.equals(FREE_TAG)) {
                 if(event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission(ADMIN_PERMISSION)) {
