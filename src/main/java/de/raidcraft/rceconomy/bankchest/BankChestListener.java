@@ -149,7 +149,7 @@ public class BankChestListener implements Listener {
         chest = (Chest)block.getState();
 
         // Owner
-        String owner = SignUtil.strip(sign.getLine(2));
+        String owner = SignUtil.strip(sign.getLine(1));
 
         BankChestManager.BankChestType bankChestType;
 
