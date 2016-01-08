@@ -14,6 +14,7 @@ import de.raidcraft.rceconomy.actionapi.ParseMoneyInputAction;
 import de.raidcraft.rceconomy.actionapi.SubstractMoneyAction;
 import de.raidcraft.rceconomy.bankchest.BankChestListener;
 import de.raidcraft.rceconomy.commands.MoneyCommands;
+import de.raidcraft.rceconomy.commands.StockMarketCommands;
 import de.raidcraft.rceconomy.listener.BalanceListener;
 import de.raidcraft.rceconomy.listener.BankSign;
 import de.raidcraft.rceconomy.listener.PlayerListener;
@@ -48,6 +49,7 @@ public class RCEconomyPlugin extends BasePlugin {
         RaidCraft.setupEconomy(api);
 
         registerCommands(MoneyCommands.class);
+        registerCommands(StockMarketCommands.class);
         registerEvents(new PlayerListener());
         registerEvents(new BalanceListener());
         registerEvents(new BankSign());
