@@ -18,6 +18,8 @@ import de.raidcraft.rceconomy.listener.BalanceListener;
 import de.raidcraft.rceconomy.listener.BankSign;
 import de.raidcraft.rceconomy.listener.PlayerListener;
 import de.raidcraft.rceconomy.tables.TAccount;
+import de.raidcraft.rceconomy.tables.TBankChest;
+import de.raidcraft.rceconomy.tables.TBankMaterial;
 import de.raidcraft.rceconomy.tables.TFlow;
 import lombok.Getter;
 
@@ -82,6 +84,8 @@ public class RCEconomyPlugin extends BasePlugin {
         List<Class<?>> tables = new ArrayList<>();
         tables.add(TAccount.class);
         tables.add(TFlow.class);
+        tables.add(TBankChest.class);
+        tables.add(TBankMaterial.class);
         return tables;
     }
 
