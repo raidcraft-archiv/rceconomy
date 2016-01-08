@@ -278,6 +278,14 @@ public class BankChestListener implements Listener {
             BankChestManager.get().updateEmptyingDate(sign.getLocation());
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.GREEN + "Deine Bankkiste wurde geleert (" + economy.getFormattedAmount(value)+ ChatColor.GREEN + ")" + "!");
+
+            // Format lines
+            formattedLines = formatSign(chest.getInventory(), playerChest);
+            for(int i = 0; i < 4; i ++) {
+                sign.setLine(i, formattedLines[i]);
+            }
+            sign.update();
+
             return;
         }
         event.setCancelled(true);
