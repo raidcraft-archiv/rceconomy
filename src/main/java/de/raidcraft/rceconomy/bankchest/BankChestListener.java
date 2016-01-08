@@ -14,6 +14,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -269,5 +270,36 @@ public class BankChestListener implements Listener {
             event.getPlayer().sendMessage(ChatColor.GREEN + "Deine Bankkiste wurde geleert (" + economy.getFormattedAmount(value)+ ChatColor.GREEN + ")" + "!");
             return;
         }
+    }
+
+    @EventHandler
+    public void onSignBreak(BlockBreakEvent event) {
+
+        if (event.getBlock() == null) {
+            return;
+        }
+
+        // Check if sign
+        if (!SignUtil.isSign(event.getBlock())) {
+            return;
+        }
+
+        Sign sign = SignUtil.getSign(event.getBlock());
+        if (sign == null) {
+            return;
+        }
+
+        // Check sign tag
+        if (!SignUtil.strip(sign.getLine(0)).equalsIgnoreCase(BANK_CHEST_TAG)) {
+            return;
+        }
+
+        TBankChest bankChest = BankChestManager.get().getChest(getOwnerId(SignUtil.strip(sign.getLine(1))));
+        if(bankChest == null) {
+            return;
+        }
+
+        // unregister chest
+        BankChestManager.get().unregister(bankChest.getId());
     }
 }
