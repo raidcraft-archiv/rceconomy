@@ -222,6 +222,7 @@ public class BankChestListener implements Listener {
             for(int i = 0; i < 4; i ++) {
                 sign.setLine(i, formattedLines[i]);
             }
+            sign.update();
 
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.GREEN + "Diese Bankkiste gehört nun dir!");
@@ -247,6 +248,7 @@ public class BankChestListener implements Listener {
         for(int i = 0; i < 4; i ++) {
             sign.setLine(i, formattedLines[i]);
         }
+        sign.update();
 
         // Check delay
         if(!BankChestManager.get().isCooldownOver(playerChest)) {
