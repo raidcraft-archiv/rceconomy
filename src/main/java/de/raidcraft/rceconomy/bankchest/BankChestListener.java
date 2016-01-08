@@ -236,7 +236,15 @@ public class BankChestListener implements Listener {
         }
 
         TBankChest playerChest = BankChestManager.get().getChest(getOwnerId(owner));
-        if(playerChest == null || !playerChest.getPlayerId().equals(event.getPlayer().getUniqueId())) {
+        if(playerChest == null) {
+            // Format lines
+            String[] formattedLines = formatSign(chest, null);
+            for(int i = 0; i < 4; i ++) {
+                sign.setLine(i, formattedLines[i]);
+            }
+            sign.update();
+        }
+        if(!playerChest.getPlayerId().equals(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Du bist nicht der Eigentümer dieser Bankkiste!");
             return;

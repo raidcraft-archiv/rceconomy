@@ -73,7 +73,13 @@ public class BankChestManager {
 
     public TBankChest register(Location signLocation, BankChestType type, UUID uuid) {
 
-        TBankChest bankChest = new TBankChest();
+        // Delete old chest
+        TBankChest bankChest = getChest(uuid, type);
+        if(bankChest != null) {
+            plugin.getDatabase().delete(bankChest);
+        }
+
+        bankChest = new TBankChest();
         bankChest.setPlayerId(uuid);
         bankChest.setLastEmptying(new Date(0));
         bankChest.setType(type.name());
