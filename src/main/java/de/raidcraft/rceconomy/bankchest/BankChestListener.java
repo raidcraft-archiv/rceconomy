@@ -7,6 +7,7 @@ import de.raidcraft.rceconomy.tables.TBankChest;
 import de.raidcraft.util.SignUtil;
 import de.raidcraft.util.UUIDUtil;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
@@ -16,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.text.DateFormat;
@@ -311,5 +313,91 @@ public class BankChestListener implements Listener {
 
         // unregister chest
         BankChestManager.get().unregister(bankChest.getId());
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+
+        if(!(event.getInventory().getHolder() instanceof Chest) &&
+                !(event.getInventory().getHolder() instanceof DoubleChest)) {
+            return;
+        }
+
+        Sign sign1 = null;
+        Sign sign2 = null;
+
+        if(event.getInventory().getHolder() instanceof Chest) {
+            Chest chest = (Chest) event.getInventory().getHolder();
+            Block signBlock = chest.getLocation().getBlock().getRelative(0, 1, 0);
+            if(!SignUtil.isSign(signBlock)) {
+                return;
+            }
+            sign1 = SignUtil.getSign(signBlock);
+        }
+
+        else if(event.getInventory().getHolder() instanceof DoubleChest) {
+            DoubleChest doubleChest = (DoubleChest)event.getInventory().getHolder();
+            Block signBlock1 = doubleChest.getLocation().getBlock().getRelative(0, 1, 0);
+            if(SignUtil.isSign(signBlock1)) {
+                sign1 = SignUtil.getSign(signBlock1);
+            }
+
+            // Find second chest block
+            do {
+                Block signBlock2;
+
+                signBlock2 = doubleChest.getLocation().getBlock().getRelative(1, 0, 0);
+                if (SignUtil.isSign(signBlock2)) {
+                    if(SignUtil.isSign(signBlock2)) {
+                        sign2 = SignUtil.getSign(signBlock2);
+                    }
+                    break;
+                }
+
+                signBlock2 = doubleChest.getLocation().getBlock().getRelative(-1, 0, 0);
+                if (SignUtil.isSign(signBlock2)) {
+                    if(SignUtil.isSign(signBlock2)) {
+                        sign2 = SignUtil.getSign(signBlock2);
+                    }
+                    break;
+                }
+
+                signBlock2 = doubleChest.getLocation().getBlock().getRelative(0, 0, 1);
+                if (SignUtil.isSign(signBlock2)) {
+                    if(SignUtil.isSign(signBlock2)) {
+                        sign2 = SignUtil.getSign(signBlock2);
+                    }
+                    break;
+                }
+
+                signBlock2 = doubleChest.getLocation().getBlock().getRelative(0, 0, -1);
+                if (SignUtil.isSign(signBlock2)) {
+                    if(SignUtil.isSign(signBlock2)) {
+                        sign2 = SignUtil.getSign(signBlock2);
+                    }
+                    break;
+                }
+            } while(false);
+        }
+
+        // Check sign
+        Location location = null;
+        if((sign1 != null && !SignUtil.strip(sign1.getLine(0)).equalsIgnoreCase(BANK_CHEST_TAG))) {
+            location = sign1.getLocation();
+        }
+        if((sign2 != null && !SignUtil.strip(sign2.getLine(0)).equalsIgnoreCase(BANK_CHEST_TAG))) {
+            location = sign2.getLocation();
+        }
+        if(location == null) {
+            return;
+        }
+
+        TBankChest tBankChest = BankChestManager.get().getChest(location);
+        if(tBankChest == null) {
+            return;
+        }
+
+        // Update sign
+        formatSign((Chest)event.getInventory().getHolder(), tBankChest);
     }
 }
