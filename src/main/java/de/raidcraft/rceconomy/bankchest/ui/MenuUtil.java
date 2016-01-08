@@ -100,7 +100,7 @@ public class MenuUtil {
 
         ItemUtils.setLore(itemStack,
                 buy + ChatColor.GOLD.toString() + "Ankaufspreis: " + economy.getFormattedAmount(bankMaterial.getPriceBuy()),
-                sell + ChatColor.GOLD.toString() + "Verkaufspreis: " + economy.getFormattedAmount(bankMaterial.getPriceBuy()));
+                sell + ChatColor.GOLD.toString() + "Verkaufspreis: " + economy.getFormattedAmount(bankMaterial.getPriceSell()));
         menu.addMenuItem(menuItem.setItem(itemStack));
     }
 }
