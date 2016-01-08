@@ -323,6 +323,8 @@ public class BankChestListener implements Listener {
             return;
         }
 
+        RaidCraft.LOGGER.info("DEBUG: 1");
+
         Sign sign1 = null;
         Sign sign2 = null;
 
@@ -330,8 +332,10 @@ public class BankChestListener implements Listener {
             Chest chest = (Chest) event.getInventory().getHolder();
             Block signBlock = chest.getLocation().getBlock().getRelative(0, 1, 0);
             if(!SignUtil.isSign(signBlock)) {
+                RaidCraft.LOGGER.info("DEBUG: 2");
                 return;
             }
+            RaidCraft.LOGGER.info("DEBUG: 2.1");
             sign1 = SignUtil.getSign(signBlock);
         }
 
@@ -348,21 +352,25 @@ public class BankChestListener implements Listener {
 
                 chestBlock2 = doubleChest.getLocation().getBlock().getRelative(1, 0, 0);
                 if ((sign2 = getSign(chestBlock2)) != null) {
+                    RaidCraft.LOGGER.info("DEBUG: 2.2");
                     break;
                 }
 
                 chestBlock2 = doubleChest.getLocation().getBlock().getRelative(-1, 0, 0);
                 if ((sign2 = getSign(chestBlock2)) != null) {
+                    RaidCraft.LOGGER.info("DEBUG: 2.3");
                     break;
                 }
 
                 chestBlock2 = doubleChest.getLocation().getBlock().getRelative(0, 0, 1);
                 if ((sign2 = getSign(chestBlock2)) != null) {
+                    RaidCraft.LOGGER.info("DEBUG: 2.4");
                     break;
                 }
 
                 chestBlock2 = doubleChest.getLocation().getBlock().getRelative(0, 0, -1);
                 if ((sign2 = getSign(chestBlock2)) != null) {
+                    RaidCraft.LOGGER.info("DEBUG: 2.5");
                     break;
                 }
             } while(false);
@@ -380,11 +388,13 @@ public class BankChestListener implements Listener {
             sign = sign2;
         }
         else if(location == null || sign == null) {
+            RaidCraft.LOGGER.info("DEBUG: 3");
             return;
         }
 
         TBankChest tBankChest = BankChestManager.get().getChest(location);
         if(tBankChest == null) {
+            RaidCraft.LOGGER.info("DEBUG: 4");
             return;
         }
 
