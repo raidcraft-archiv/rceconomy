@@ -56,7 +56,7 @@ public class MaterialPricesMenu {
         itemStack = new ItemStack(Material.BOOK);
         ItemUtils.setDisplayName(itemStack, "Hilfe:");
         ItemUtils.setLore(itemStack,
-                MenuUtil.splitSentence("Hier siehst du alle Items die von der Raid-Craft Bank an- und verkauft werden."));
+                MenuUtil.splitSentence("Hier siehst du alle Items die von der Raid-Craft Bank an- und verkauft werden. Items können in der Bank an Schilder oder in Bankkisten verkauft werden."));
         menu.addMenuItem(new MenuItem().setItem(itemStack));
 
         MenuUtil.addPlaceholder(menu, 4);
