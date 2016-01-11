@@ -171,6 +171,14 @@ public class BankChestListener implements Listener {
             if(!owner.equals(FREE_TAG)) {
                 if(event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission(ADMIN_PERMISSION)) {
                     BankChestManager.get().unregister(getOwnerId(owner));
+
+                    // Format lines
+                    String[] formattedLines = formatSign(chest.getInventory(), null);
+                    for(int i = 0; i < 4; i ++) {
+                        sign.setLine(i, formattedLines[i]);
+                    }
+                    sign.update();
+
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(ChatColor.GREEN + "Die Bankkiste wurde wieder freigegeben!");
                     return;
