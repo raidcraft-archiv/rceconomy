@@ -265,6 +265,24 @@ public class BankChestListener implements Listener {
             return;
         }
 
+        // Check permission again
+        if(playerChest.getBankChestType() == BankChestManager.BankChestType.SINGLE_CHEST &&
+                !event.getPlayer().hasPermission(SINGLE_PERMISSION))
+        {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED + "Du darfst keine Bank Einzelkiste mehr leeren!");
+            return;
+        }
+
+        // Check permission again
+        if(playerChest.getBankChestType() == BankChestManager.BankChestType.DOUBLE_CHEST &&
+                !event.getPlayer().hasPermission(DOUBLE_PERMISSION))
+        {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED + "Du darfst keine Bank Doppelkiste mehr leeren!");
+            return;
+        }
+
         // Format lines
         String[] formattedLines = formatSign(chest.getInventory(), playerChest);
         for(int i = 0; i < 4; i ++) {

@@ -1,5 +1,6 @@
 package de.raidcraft.rceconomy.tables;
 
+import de.raidcraft.rceconomy.bankchest.BankChestManager;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,4 +29,9 @@ public class TBankChest {
     public int x;
     public int y;
     public int z;
+
+    public BankChestManager.BankChestType getBankChestType() {
+
+        return BankChestManager.BankChestType.valueOf(type);
+    }
 }
