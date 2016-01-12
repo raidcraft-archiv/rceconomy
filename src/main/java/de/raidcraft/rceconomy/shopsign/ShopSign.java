@@ -176,11 +176,22 @@ public class ShopSign {
         // Open config menu
         if(player.getUniqueId().equals(playerId)) {
 
+            // block sign
+            double backupPrice = price;
+            price = 0;
+            updateSign();
+            price = backupPrice;
+
             if(type == ShopSignType.SELL) {
                 SellMenu.get().open(player, this);
             } else if(type == ShopSignType.BUY) {
                 //TODO
             }
+        }
+
+        if(isBlocked()) {
+            player.sendMessage(ChatColor.RED + "Dieses Schild kann derzeit nicht verwendet werden!");
+            return;
         }
 
         // Sell or buy items
