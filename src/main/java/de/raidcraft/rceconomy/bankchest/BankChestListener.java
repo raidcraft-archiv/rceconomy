@@ -18,6 +18,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 
@@ -352,6 +353,85 @@ public class BankChestListener implements Listener {
 
         // unregister chest
         BankChestManager.get().unregister(bankChest.getId());
+    }
+
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event) {
+
+        if(!(event.getInventory().getHolder() instanceof Chest) &&
+                !(event.getInventory().getHolder() instanceof DoubleChest)) {
+            return;
+        }
+
+        Sign sign1 = null;
+        Sign sign2 = null;
+
+        if(event.getInventory().getHolder() instanceof Chest) {
+            Chest chest = (Chest) event.getInventory().getHolder();
+            Block signBlock = chest.getLocation().getBlock().getRelative(0, 1, 0);
+            if(!SignUtil.isSign(signBlock)) {
+                return;
+            }
+            sign1 = SignUtil.getSign(signBlock);
+        }
+
+        else if(event.getInventory().getHolder() instanceof DoubleChest) {
+            DoubleChest doubleChest = (DoubleChest)event.getInventory().getHolder();
+            Block signBlock1 = doubleChest.getLocation().getBlock().getRelative(0, 1, 0);
+            if(SignUtil.isSign(signBlock1)) {
+                sign1 = SignUtil.getSign(signBlock1);
+            }
+
+            // Find second chest block
+            do {
+                Block chestBlock2;
+
+                chestBlock2 = doubleChest.getLocation().getBlock().getRelative(1, 0, 0);
+                if ((sign2 = getSign(chestBlock2)) != null) {
+                    break;
+                }
+
+                chestBlock2 = doubleChest.getLocation().getBlock().getRelative(-1, 0, 0);
+                if ((sign2 = getSign(chestBlock2)) != null) {
+                    break;
+                }
+
+                chestBlock2 = doubleChest.getLocation().getBlock().getRelative(0, 0, 1);
+                if ((sign2 = getSign(chestBlock2)) != null) {
+                    break;
+                }
+
+                chestBlock2 = doubleChest.getLocation().getBlock().getRelative(0, 0, -1);
+                if ((sign2 = getSign(chestBlock2)) != null) {
+                    break;
+                }
+            } while(false);
+        }
+
+        // Check sign
+        Location location = null;
+        Sign sign = null;
+        if((sign1 != null && SignUtil.strip(sign1.getLine(0)).equalsIgnoreCase(BANK_CHEST_TAG))) {
+            location = sign1.getLocation();
+            sign = sign1;
+        }
+        else if((sign2 != null && SignUtil.strip(sign2.getLine(0)).equalsIgnoreCase(BANK_CHEST_TAG))) {
+            location = sign2.getLocation();
+            sign = sign2;
+        }
+        else if(location == null || sign == null) {
+            return;
+        }
+
+        TBankChest tBankChest = BankChestManager.get().getChest(location);
+        if(tBankChest == null) {
+            return;
+        }
+
+        if(!tBankChest.getPlayerId().equals(event.getPlayer().getUniqueId()) && !event.getPlayer().hasPermission(ADMIN_PERMISSION)) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED + "Du bist nicht Eigentümer dieser Bankkiste!");
+        }
     }
 
     @EventHandler
