@@ -1,4 +1,4 @@
-package de.raidcraft.rceconomy.listener;
+package de.raidcraft.rceconomy.banksign;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Created by Philip on 03.01.2016.
  */
-public class BankSign implements Listener {
+public class BankSignListener implements Listener {
 
     private static String BANK_SIGN_TAG = "BANK-ANKAUF";
 
@@ -27,7 +27,7 @@ public class BankSign implements Listener {
         String[] lines = new String[4];
 
         lines[0] = ChatColor.YELLOW + "[" + ChatColor.GREEN + BANK_SIGN_TAG + ChatColor.YELLOW + "]";
-        lines[3] = ChatColor.BLACK + RaidCraft.getComponent(RCEconomyPlugin.class).getApi().getFormattedAmount(amount);
+        lines[3] = ChatColor.BLACK + RaidCraft.getEconomy().getFormattedAmount(amount);
 
         // Material colors
         switch(material) {
@@ -135,7 +135,7 @@ public class BankSign implements Listener {
 
         // Get amount
         double amount = 0;
-        amount = RaidCraft.getComponent(RCEconomyPlugin.class).getApi().parseCurrencyInput(sign.getLine(3));
+        amount = RaidCraft.getEconomy().parseCurrencyInput(sign.getLine(3));
         if(amount == 0) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Dieses Bankschild ist defekt (falscher Geldbetrag)!");
@@ -170,7 +170,7 @@ public class BankSign implements Listener {
         event.getPlayer().updateInventory();
 
         // Give money
-        RaidCraft.getComponent(RCEconomyPlugin.class).getApi().add(event.getPlayer().getUniqueId(),
+        RaidCraft.getEconomy().add(event.getPlayer().getUniqueId(),
                 amount * itemExchangeNum, BalanceSource.TRADE,
                 itemExchangeNum + " " + ItemUtils.getFriendlyName(material) + " an die Bank verkauft");
     }
