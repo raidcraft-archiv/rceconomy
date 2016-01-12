@@ -3,6 +3,7 @@ package de.raidcraft.rceconomy.shopsign;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
+import de.raidcraft.rceconomy.shopsign.ui.SellMenu;
 import de.raidcraft.util.ItemUtils;
 import de.raidcraft.util.SignUtil;
 import de.raidcraft.util.UUIDUtil;
@@ -175,6 +176,11 @@ public class ShopSign {
         // Open config menu
         if(player.getUniqueId().equals(playerId)) {
 
+            if(type == ShopSignType.SELL) {
+                SellMenu.get().open(player, this);
+            } else if(type == ShopSignType.BUY) {
+                //TODO
+            }
         }
 
         // Sell or buy items

@@ -5,6 +5,7 @@ import de.raidcraft.api.chestui.ChestUI;
 import de.raidcraft.api.chestui.Menu;
 import de.raidcraft.api.chestui.menuitems.MenuItem;
 import de.raidcraft.api.chestui.menuitems.MenuItemAPI;
+import de.raidcraft.rceconomy.MenuUtil;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
 import de.raidcraft.rceconomy.bankchest.BankMaterialManager;
 import de.raidcraft.rceconomy.tables.TBankMaterial;
@@ -42,7 +43,7 @@ public class MaterialPricesMenu {
         final int totalPages;
         List<TBankMaterial> bankMaterials = BankMaterialManager.get().getAllMaterials();
         if(bankMaterials != null && !bankMaterials.isEmpty()) {
-            totalPages = (int)Math.ceil((double)bankMaterials.size() / (double)MenuUtil.MAX_SLOTS_PER_MENU);
+            totalPages = (int)Math.ceil((double)bankMaterials.size() / (double) MenuUtil.MAX_SLOTS_PER_MENU);
         } else {
             totalPages = 1;
         }

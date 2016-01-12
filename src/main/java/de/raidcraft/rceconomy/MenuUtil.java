@@ -1,4 +1,4 @@
-package de.raidcraft.rceconomy.bankchest.ui;
+package de.raidcraft.rceconomy;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.chestui.Menu;
