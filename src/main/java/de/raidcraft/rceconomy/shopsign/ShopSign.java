@@ -187,6 +187,8 @@ public class ShopSign {
             } else if(type == ShopSignType.BUY) {
                 //TODO
             }
+
+            return;
         }
 
         if(isBlocked()) {

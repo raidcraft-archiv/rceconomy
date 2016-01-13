@@ -113,5 +113,8 @@ public class ShopSignListener implements Listener {
             event.getPlayer().sendMessage(ChatColor.RED + "Du darfst keine Handelsschilder abreissen!");
             return;
         }
+
+        //TODO: Drop items
+        event.getPlayer().sendMessage(ChatColor.GREEN + "Handelsschild entfernt.");
     }
 }
