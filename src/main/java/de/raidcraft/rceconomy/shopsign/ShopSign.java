@@ -47,8 +47,10 @@ public class ShopSign {
     @Getter
     @Setter
     private int maxNumber;
+    @Getter
     private int boughtNumber;
     private boolean blocked;
+    @Getter
     private ShopSignType type;
     @Getter
     @Setter

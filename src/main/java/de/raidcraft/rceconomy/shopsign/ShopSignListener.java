@@ -114,7 +114,23 @@ public class ShopSignListener implements Listener {
             return;
         }
 
-        //TODO: Drop items
+        if(shopSign.getType() == ShopSign.ShopSignType.SELL) {
+            int itemsLeft = shopSign.getMaxNumber();
+            while (itemsLeft > 0) {
+                ItemStack itemStack = new ItemStack(shopSign.getMaterial(), Math.min(64, itemsLeft));
+                sign.getLocation().getWorld().dropItemNaturally(sign.getLocation(), itemStack);
+                itemsLeft -= itemStack.getAmount();
+            }
+        }
+        else if (shopSign.getType() == ShopSign.ShopSignType.BUY) {
+            int itemsLeft = shopSign.getBoughtNumber();
+            while (itemsLeft > 0) {
+                ItemStack itemStack = new ItemStack(shopSign.getMaterial(), Math.min(64, itemsLeft));
+                sign.getLocation().getWorld().dropItemNaturally(sign.getLocation(), itemStack);
+                itemsLeft -= itemStack.getAmount();
+            }
+        }
+
         event.getPlayer().sendMessage(ChatColor.GREEN + "Handelsschild entfernt.");
     }
 }
