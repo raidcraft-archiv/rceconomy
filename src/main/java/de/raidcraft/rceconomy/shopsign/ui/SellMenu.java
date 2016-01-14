@@ -42,7 +42,7 @@ public class SellMenu {
     private void addPriceButton(Menu menu, ShopSign shopSign, EditedSign changeValues, String text, double priceChange) {
 
         ItemStack itemStack;
-        itemStack = new ItemStack(new ItemStack(Material.INK_SACK, 1, DyeColor.MAGENTA.getData()));
+        itemStack = ItemUtils.getDye(DyeColor.MAGENTA);
         ItemUtils.setDisplayName(itemStack, text);
         menu.addMenuItem(new MenuItemAPI() {
             @Override
