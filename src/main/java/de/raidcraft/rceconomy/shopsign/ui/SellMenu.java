@@ -43,6 +43,7 @@ public class SellMenu {
 
         ItemStack itemStack;
         itemStack = ItemUtils.getDye(DyeColor.MAGENTA);
+        itemStack.setAmount(1);
         ItemUtils.setDisplayName(itemStack, text);
         menu.addMenuItem(new MenuItemAPI() {
             @Override
@@ -59,10 +60,10 @@ public class SellMenu {
         menu.setPlacingItemsMustSameType(true);
         ItemStack itemStack;
 
-        int gold = (int)(shopSign.getPrice() / 100D);
-        int silver = (int)(shopSign.getPrice() - (int)(gold*100D));
-        int bronze = (int)(shopSign.getPrice() * 100D) % 100;
-        String formattedBalance = RaidCraft.getEconomy().getFormattedAmount(shopSign.getPrice());
+        int gold = (int)(changeValues.getPrice() / 100D);
+        int silver = (int)(changeValues.getPrice() - (int)(gold*100D));
+        int bronze = (int)(changeValues.getPrice() * 100D) % 100;
+        String formattedBalance = RaidCraft.getEconomy().getFormattedAmount(changeValues.getPrice());
 
         if(gold > 64) gold = 1;
         if(silver > 64) silver = 1;
