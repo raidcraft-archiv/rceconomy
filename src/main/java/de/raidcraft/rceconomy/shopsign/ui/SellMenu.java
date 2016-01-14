@@ -1,6 +1,7 @@
 package de.raidcraft.rceconomy.shopsign.ui;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.chestui.ChestUI;
 import de.raidcraft.api.chestui.Menu;
 import de.raidcraft.api.chestui.menuitems.MenuItem;
 import de.raidcraft.api.chestui.menuitems.MenuItemAPI;
@@ -152,6 +153,17 @@ public class SellMenu {
                 menu.close();
             }
         }.setItem(itemStack));
+
+        // Add existing items
+        int itemsLeft = changeValues.getItemNumber();
+        while(itemsLeft > 0) {
+            itemStack = new ItemStack(changeValues.getMaterial(), Math.min(64, itemsLeft));
+            menu.addItemInPlacingSlot(itemStack);
+            itemsLeft -= itemStack.getAmount();
+        }
+
+        // Open menu
+        ChestUI.getInstance().openMenu(player, menu);
 
         return true;
     }
