@@ -2,12 +2,13 @@ package de.raidcraft.rceconomy.shopsign;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
-import de.raidcraft.rceconomy.RCEconomyPlugin;
+import de.raidcraft.rceconomy.shopsign.ui.EditedSign;
 import de.raidcraft.rceconomy.shopsign.ui.SellMenu;
 import de.raidcraft.util.ItemUtils;
 import de.raidcraft.util.SignUtil;
 import de.raidcraft.util.UUIDUtil;
 import lombok.Getter;
+import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -40,11 +41,17 @@ public class ShopSign {
 
     private Sign sign;
     private UUID playerId;
+    @Getter
+    @Setter
     private Material material;
+    @Getter
+    @Setter
     private int maxNumber;
     private int boughtNumber;
     private boolean blocked;
     private ShopSignType type;
+    @Getter
+    @Setter
     private double price;
     @Getter
     private boolean isValid;
@@ -171,6 +178,12 @@ public class ShopSign {
         return false;
     }
 
+    public void updateValues(EditedSign changeValues) {
+        price = changeValues.getPrice();
+        material = changeValues.getMaterial();
+        maxNumber = changeValues.getItemNumber();
+    }
+
     public void interact(Player player, Action action) {
 
         // Open config menu
@@ -183,7 +196,7 @@ public class ShopSign {
             price = backupPrice;
 
             if(type == ShopSignType.SELL) {
-                SellMenu.get().open(player, this);
+                SellMenu.get().open(player, this, new EditedSign(this));
             } else if(type == ShopSignType.BUY) {
                 //TODO
             }
@@ -192,7 +205,7 @@ public class ShopSign {
         }
 
         if(isBlocked()) {
-            player.sendMessage(ChatColor.RED + "Dieses Schild kann derzeit nicht verwendet werden!");
+            player.sendMessage(ChatColor.RED + "Dieser Shop ist derzeit geschlossen!");
             return;
         }
 
