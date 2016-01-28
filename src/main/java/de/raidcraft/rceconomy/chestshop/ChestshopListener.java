@@ -158,7 +158,8 @@ public class ChestshopListener implements Listener {
     @EventHandler
     public void onSignClick(PlayerInteractEvent event) {
 
-        if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+        if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_AIR)
+                || event.getPlayer().isSneaking()) {
             return;
         }
 
@@ -401,6 +402,15 @@ public class ChestshopListener implements Listener {
             sign = sign2;
         }
         else if(location == null || sign == null) {
+            return;
+        }
+
+        // Check if owner
+        int ownerId = getOwnerId(ChatColor.stripColor(sign.getLine(1)));
+        if(!UUIDUtil.getUuidFromPlayerId(ownerId).equals(event.getPlayer().getUniqueId()))
+        {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED + "Dieser Shop gehört dir nicht!");
             return;
         }
 
