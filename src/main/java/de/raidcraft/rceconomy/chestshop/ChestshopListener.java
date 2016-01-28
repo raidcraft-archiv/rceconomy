@@ -182,7 +182,7 @@ public class ChestshopListener implements Listener {
         // Check permissions
         if(!event.getPlayer().hasPermission("chestshop.use")) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "Du darfst keine Bankkisten benutzen!");
+            event.getPlayer().sendMessage(ChatColor.RED + "Du darfst kein Shop benutzen!");
             return;
         }
 
@@ -213,7 +213,7 @@ public class ChestshopListener implements Listener {
         }
 
         // Check if owner
-        int ownerId = getOwnerId(sign.getLine(1));
+        int ownerId = getOwnerId(ChatColor.stripColor(sign.getLine(1)));
         if(UUIDUtil.getUuidFromPlayerId(ownerId).equals(event.getPlayer().getUniqueId()))
         {
             event.setCancelled(true);
