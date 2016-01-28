@@ -72,7 +72,7 @@ public class ChestshopListener implements Listener {
 
         lines[0] = ChatColor.YELLOW + "[" + ChatColor.GREEN + CHESTSHOP_TAG + ChatColor.YELLOW + "]";
         lines[1] = ChatColor.AQUA.toString() + UUIDUtil.getPlayerId(owner.getUniqueId()) + ChatColor.WHITE +
-                "-" + ChatColor.AQUA + owner.getName();
+                "-" + ChatColor.AQUA + owner.getName().substring(0, Math.min(10, owner.getName().length())) ;
         lines[2] = ChatColor.BLACK + shopType.getDisplayText();
         lines[3] = RaidCraft.getEconomy().getFormattedAmount(price);
 
@@ -407,7 +407,8 @@ public class ChestshopListener implements Listener {
 
         // Check if owner
         int ownerId = getOwnerId(ChatColor.stripColor(sign.getLine(1)));
-        if(!UUIDUtil.getUuidFromPlayerId(ownerId).equals(event.getPlayer().getUniqueId()))
+        if(!UUIDUtil.getUuidFromPlayerId(ownerId).equals(event.getPlayer().getUniqueId()) &&
+                !event.getPlayer().hasPermission("chesthop.admin"))
         {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Dieser Shop gehört dir nicht!");
