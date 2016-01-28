@@ -319,11 +319,11 @@ public class ChestshopListener implements Listener {
             // Subtract from player
             RaidCraft.getEconomy().substract(UUIDUtil.getUuidFromPlayerId(ownerId), totalPrice, BalanceSource.TRADE,
                     itemAmount + "x" + ItemUtils.getFriendlyName(material) + " von " +
-                            UUIDUtil.getNameFromUUID(UUIDUtil.getUuidFromPlayerId(ownerId)) + " gekauft");
+                            event.getPlayer().getName() + " gekauft");
             // Add to seller
             RaidCraft.getEconomy().add(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
                     itemAmount + "x" + ItemUtils.getFriendlyName(material) + " an " +
-                            event.getPlayer().getName() + " verkauft");
+                            UUIDUtil.getNameFromUUID(UUIDUtil.getUuidFromPlayerId(ownerId)) + " verkauft");
             // Add item to chest
             chest.getInventory().addItem(new ItemStack(material, itemAmount));
             // Subtract items from player
