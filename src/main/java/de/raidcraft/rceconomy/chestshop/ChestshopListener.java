@@ -189,6 +189,11 @@ public class ChestshopListener implements Listener {
 
         // Check if owner
         int ownerId = getOwnerId(ChatColor.stripColor(sign.getLine(1)));
+        if(ownerId == 0) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED + "Dieser Shop ist kaputt!");
+            return;
+        }
         if(UUIDUtil.getUuidFromPlayerId(ownerId).equals(event.getPlayer().getUniqueId()))
         {
             event.setCancelled(true);
@@ -401,6 +406,11 @@ public class ChestshopListener implements Listener {
 
         // Check if owner
         int ownerId = getOwnerId(ChatColor.stripColor(sign.getLine(1)));
+        if(ownerId == 0) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED + "Dieser Shop ist kaputt!");
+            return;
+        }
         if(!UUIDUtil.getUuidFromPlayerId(ownerId).equals(event.getPlayer().getUniqueId()) &&
                 !event.getPlayer().hasPermission("chesthop.admin"))
         {
