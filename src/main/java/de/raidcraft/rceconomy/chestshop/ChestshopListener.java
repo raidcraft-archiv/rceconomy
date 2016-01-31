@@ -44,7 +44,7 @@ public class ChestshopListener implements Listener {
 
         lines[0] = ChatColor.YELLOW + "[" + ChatColor.GREEN + CHESTSHOP_TAG + ChatColor.YELLOW + "]";
         lines[1] = ChatColor.AQUA.toString() + UUIDUtil.getPlayerId(owner.getUniqueId()) + ChatColor.WHITE +
-                "-" + ChatColor.AQUA + owner.getName().substring(0, Math.min(10, owner.getName().length())) ;
+                "-" + ChatColor.AQUA + owner.getName().substring(0, Math.min(9, owner.getName().length())) ;
         lines[2] = ChatColor.BLACK + shopType.getDisplayText();
         lines[3] = RaidCraft.getEconomy().getFormattedAmount(price);
 
