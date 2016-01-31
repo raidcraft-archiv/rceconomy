@@ -28,6 +28,9 @@ import org.bukkit.inventory.ItemStack;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by Philip on 25.01.2016.
@@ -36,37 +39,6 @@ public class ChestshopListener implements Listener {
 
     private static String CHESTSHOP_TAG = "Shop";
 
-    public enum ShopType{
-        SELL("Verkauf", "chestshop.create"),
-        BUY("Ankauf", "chestshop.create"),
-        ADMIN_SELL("Server-Verkauf", "chesthop.admin"),
-        ADMIN_BUY("Server-Ankauf", "chestshop.admin");
-
-        private String displayText;
-        private String permission;
-
-        private ShopType(String displayText, String permission) {
-            this.displayText = displayText;
-            this.permission = permission;
-        }
-
-        public String getDisplayText() {
-            return displayText;
-        }
-
-        public String getPermission() {
-            return permission;
-        }
-
-        public static ShopType getByDisplayText(String displayText) {
-            for(ShopType shopType : ShopType.values()) {
-                if(shopType.getDisplayText().equalsIgnoreCase(displayText)) {
-                    return shopType;
-                }
-            }
-            return null;
-        }
-    }
     private String[] formatSign(ShopType shopType, Player owner, double price) {
         String[] lines = new String[4];
 
@@ -104,8 +76,7 @@ public class ChestshopListener implements Listener {
     public void onSignCreate(SignChangeEvent event) {
 
         // Check sign tag
-        if(!SignUtil.strip(event.getLine(0)).equalsIgnoreCase(CHESTSHOP_TAG))
-        {
+        if(!SignUtil.strip(event.getLine(0)).equalsIgnoreCase(CHESTSHOP_TAG)) {
             return;
         }
 
@@ -160,30 +131,33 @@ public class ChestshopListener implements Listener {
 
         if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_AIR)
                 || event.getPlayer().isSneaking()) {
+            ShopUseConformer.unregister(event.getPlayer().getUniqueId());
             return;
         }
 
         // Check if sign
         if(!SignUtil.isSign(event.getClickedBlock())) {
+            ShopUseConformer.unregister(event.getPlayer().getUniqueId());
             return;
         }
 
         Sign sign = SignUtil.getSign(event.getClickedBlock());
-        if(sign == null)
-        {
+        if(sign == null) {
+            ShopUseConformer.unregister(event.getPlayer().getUniqueId());
             return;
         }
 
         // Check sign tag
-        if(!SignUtil.strip(sign.getLine(0)).equalsIgnoreCase(CHESTSHOP_TAG))
-        {
+        if(!SignUtil.strip(sign.getLine(0)).equalsIgnoreCase(CHESTSHOP_TAG)) {
+            ShopUseConformer.unregister(event.getPlayer().getUniqueId());
             return;
         }
 
         // Check permissions
         if(!event.getPlayer().hasPermission("chestshop.use")) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "Du darfst kein Shop benutzen!");
+            event.getPlayer().sendMessage(ChatColor.RED + "Du darfst keinen Shop benutzen!");
+            ShopUseConformer.unregister(event.getPlayer().getUniqueId());
             return;
         }
 
@@ -247,6 +221,16 @@ public class ChestshopListener implements Listener {
             }
             double totalPrice = itemAmount * price;
 
+            // Check if confirmed
+            if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType)) {
+                event.getPlayer().sendMessage(ChatColor.GOLD + "Klicke erneut um den Kauf von " +
+                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()) +
+                        " für " + RaidCraft.getEconomy().getFormattedAmount(totalPrice) +
+                        ChatColor.GOLD + " zu bestätigen!");
+                event.setCancelled(true);
+                return;
+            }
+
             // Check player balance
             if(!RaidCraft.getEconomy().hasEnough(event.getPlayer().getUniqueId(), totalPrice)) {
                 event.setCancelled(true);
@@ -307,6 +291,16 @@ public class ChestshopListener implements Listener {
                 itemAmount = Math.min(spaceLeft, itemInventoryCount);
             }
             double totalPrice = itemAmount * price;
+
+            // Check if confirmed
+            if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType)) {
+                event.getPlayer().sendMessage(ChatColor.GOLD + "Klicke erneut um den Verkauf von " +
+                        itemAmount + "x" + ItemUtils.getFriendlyName(material) +
+                        " für " + RaidCraft.getEconomy().getFormattedAmount(totalPrice) +
+                        ChatColor.GOLD + " zu bestätigen!");
+                event.setCancelled(true);
+                return;
+            }
 
             // Check player balance
             if(!RaidCraft.getEconomy().hasEnough(UUIDUtil.getUuidFromPlayerId(ownerId), totalPrice)) {
