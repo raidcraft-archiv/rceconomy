@@ -43,8 +43,13 @@ public class ChestshopListener implements Listener {
         String[] lines = new String[4];
 
         lines[0] = ChatColor.YELLOW + "[" + ChatColor.GREEN + CHESTSHOP_TAG + ChatColor.YELLOW + "]";
-        lines[1] = ChatColor.AQUA.toString() + UUIDUtil.getPlayerId(owner.getUniqueId()) + ChatColor.WHITE +
-                "-" + ChatColor.AQUA + owner.getName().substring(0, Math.min(9, owner.getName().length())) ;
+        if(shopType == ShopType.ADMIN_BUY || shopType == ShopType.ADMIN_SELL) {
+            lines[1] = ChatColor.AQUA.toString() + "1 " + ChatColor.WHITE +
+                    "-" + ChatColor.AQUA + " Server";
+        } else {
+            lines[1] = ChatColor.AQUA.toString() + UUIDUtil.getPlayerId(owner.getUniqueId()) + ChatColor.WHITE +
+                    "-" + ChatColor.AQUA + owner.getName().substring(0, Math.min(9, owner.getName().length()));
+        }
         lines[2] = ChatColor.BLACK + shopType.getDisplayText();
         lines[3] = RaidCraft.getEconomy().getFormattedAmount(price);
 
@@ -194,14 +199,14 @@ public class ChestshopListener implements Listener {
             event.getPlayer().sendMessage(ChatColor.RED + "Dieser Shop ist kaputt!");
             return;
         }
-        if(UUIDUtil.getUuidFromPlayerId(ownerId).equals(event.getPlayer().getUniqueId()))
+        if(ownerId != 1 && UUIDUtil.getUuidFromPlayerId(ownerId).equals(event.getPlayer().getUniqueId()))
         {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Dieser Shop gehört dir!");
             return;
         }
 
-        if(shopType == ShopType.SELL) {
+        if(shopType == ShopType.SELL || shopType == ShopType.ADMIN_SELL) {
 
             // Get current item
             ItemStack itemStack = null;
@@ -246,20 +251,27 @@ public class ChestshopListener implements Listener {
                 return;
             }
 
-            // Subtract from player
-            RaidCraft.getEconomy().substract(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
-                    itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()) + " von " +
-                            UUIDUtil.getNameFromUUID(UUIDUtil.getUuidFromPlayerId(ownerId)) + " gekauft");
-            // Add to seller
-            RaidCraft.getEconomy().add(UUIDUtil.getUuidFromPlayerId(ownerId), totalPrice, BalanceSource.TRADE,
-                    itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()) + " an " +
-                           event.getPlayer().getName() + " verkauft");
+            if(shopType == ShopType.ADMIN_SELL) {
+                // Subtract from player
+                RaidCraft.getEconomy().substract(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
+                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()) + " vom Server gekauft");
+            } else {
+                // Subtract from player
+                RaidCraft.getEconomy().substract(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
+                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()) + " von " +
+                                UUIDUtil.getNameFromUUID(UUIDUtil.getUuidFromPlayerId(ownerId)) + " gekauft");
+                // Add to seller
+                RaidCraft.getEconomy().add(UUIDUtil.getUuidFromPlayerId(ownerId), totalPrice, BalanceSource.TRADE,
+                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()) + " an " +
+                                event.getPlayer().getName() + " verkauft");
+                // Subtract items from chest
+                chest.getInventory().removeItem(new ItemStack(itemStack.getType(), itemAmount));
+            }
+
             // Add item to player
             InventoryUtils.addOrDropItems(event.getPlayer(), new ItemStack(itemStack.getType(), itemAmount));
-            // Subtract items from chest
-            chest.getInventory().removeItem(new ItemStack(itemStack.getType(), itemAmount));
         }
-        else if(shopType == ShopType.BUY) {
+        else if(shopType == ShopType.BUY || shopType == ShopType.ADMIN_BUY) {
 
             // Get space left
             int spaceLeft = 0;
@@ -309,24 +321,31 @@ public class ChestshopListener implements Listener {
                 return;
             }
 
-            // Check player balance
-            if(!RaidCraft.getEconomy().hasEnough(UUIDUtil.getUuidFromPlayerId(ownerId), totalPrice)) {
-                event.setCancelled(true);
-                event.getPlayer().sendMessage(
-                        ChatColor.RED + "Der Shopbesitzer kann sich den Kauf nicht leisten!");
-                return;
+            if(shopType == ShopType.ADMIN_BUY) {
+                // Add to seller
+                RaidCraft.getEconomy().add(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
+                        itemAmount + "x" + ItemUtils.getFriendlyName(material) + " an den Server verkauft");
+            } else {
+                // Check player balance
+                if (!RaidCraft.getEconomy().hasEnough(UUIDUtil.getUuidFromPlayerId(ownerId), totalPrice)) {
+                    event.setCancelled(true);
+                    event.getPlayer().sendMessage(
+                            ChatColor.RED + "Der Shopbesitzer kann sich den Kauf nicht leisten!");
+                    return;
+                }
+
+                // Subtract from player
+                RaidCraft.getEconomy().substract(UUIDUtil.getUuidFromPlayerId(ownerId), totalPrice, BalanceSource.TRADE,
+                        itemAmount + "x" + ItemUtils.getFriendlyName(material) + " von " +
+                                event.getPlayer().getName() + " gekauft");
+                // Add to seller
+                RaidCraft.getEconomy().add(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
+                        itemAmount + "x" + ItemUtils.getFriendlyName(material) + " an " +
+                                UUIDUtil.getNameFromUUID(UUIDUtil.getUuidFromPlayerId(ownerId)) + " verkauft");
+                // Add item to chest
+                chest.getInventory().addItem(new ItemStack(material, itemAmount));
             }
 
-            // Subtract from player
-            RaidCraft.getEconomy().substract(UUIDUtil.getUuidFromPlayerId(ownerId), totalPrice, BalanceSource.TRADE,
-                    itemAmount + "x" + ItemUtils.getFriendlyName(material) + " von " +
-                            event.getPlayer().getName() + " gekauft");
-            // Add to seller
-            RaidCraft.getEconomy().add(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
-                    itemAmount + "x" + ItemUtils.getFriendlyName(material) + " an " +
-                            UUIDUtil.getNameFromUUID(UUIDUtil.getUuidFromPlayerId(ownerId)) + " verkauft");
-            // Add item to chest
-            chest.getInventory().addItem(new ItemStack(material, itemAmount));
             // Subtract items from player
             event.getPlayer().getInventory().removeItem(new ItemStack(material, itemAmount));
 
@@ -413,7 +432,7 @@ public class ChestshopListener implements Listener {
             event.getPlayer().sendMessage(ChatColor.RED + "Dieser Shop ist kaputt!");
             return;
         }
-        if(!UUIDUtil.getUuidFromPlayerId(ownerId).equals(event.getPlayer().getUniqueId()) &&
+        if(ownerId == 1 || !UUIDUtil.getUuidFromPlayerId(ownerId).equals(event.getPlayer().getUniqueId()) &&
                 !event.getPlayer().hasPermission("chesthop.admin"))
         {
             event.setCancelled(true);
