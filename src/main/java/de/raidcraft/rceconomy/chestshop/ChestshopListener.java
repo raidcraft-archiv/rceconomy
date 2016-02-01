@@ -232,7 +232,7 @@ public class ChestshopListener implements Listener {
             double totalPrice = itemAmount * price;
 
             // Check if confirmed
-            if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType)) {
+            if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType, event.getAction())) {
                 event.getPlayer().sendMessage(ChatColor.GOLD + "Klicke erneut um den Kauf von " +
                         itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()));
                 event.getPlayer().sendMessage(ChatColor.GOLD + "für " +
@@ -311,7 +311,7 @@ public class ChestshopListener implements Listener {
             double totalPrice = itemAmount * price;
 
             // Check if confirmed
-            if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType)) {
+            if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType, event.getAction())) {
                 event.getPlayer().sendMessage(ChatColor.GOLD + "Klicke erneut um den Verkauf von " +
                         itemAmount + "x" + ItemUtils.getFriendlyName(material));
                 event.getPlayer().sendMessage(ChatColor.GOLD + "für " +

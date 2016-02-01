@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.event.block.Action;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,8 @@ public class ShopUseConformer {
     private Location location;
     @Getter
     private ShopType shopType;
+    @Getter
+    private Action action;
 
     private static Map<UUID, ShopUseConformer> registry = new HashMap<>();
 
@@ -27,15 +30,16 @@ public class ShopUseConformer {
         registry.remove(uuid);
     }
 
-    public static boolean checkOrRegister(UUID uuid, Location location, ShopType shopType) {
+    public static boolean checkOrRegister(UUID uuid, Location location, ShopType shopType, Action action) {
 
         if(registry.containsKey(uuid) &&
                 registry.get(uuid).getLocation().equals(location) &&
-                registry.get(uuid).getShopType() ==shopType) {
+                registry.get(uuid).getShopType() ==shopType &&
+                registry.get(uuid).getAction() == action) {
             unregister(uuid);
             return true;
         } else {
-            registry.put(uuid, new ShopUseConformer(location, shopType));
+            registry.put(uuid, new ShopUseConformer(location, shopType, action));
             return false;
         }
     }
