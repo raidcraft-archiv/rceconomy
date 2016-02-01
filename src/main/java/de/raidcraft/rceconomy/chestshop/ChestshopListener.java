@@ -44,8 +44,8 @@ public class ChestshopListener implements Listener {
 
         lines[0] = ChatColor.YELLOW + "[" + ChatColor.GREEN + CHESTSHOP_TAG + ChatColor.YELLOW + "]";
         if(shopType == ShopType.ADMIN_BUY || shopType == ShopType.ADMIN_SELL) {
-            lines[1] = ChatColor.AQUA.toString() + "1 " + ChatColor.WHITE +
-                    "-" + ChatColor.AQUA + " Server";
+            lines[1] = ChatColor.AQUA.toString() + "1" + ChatColor.WHITE +
+                    "-" + ChatColor.AQUA + "Server";
         } else {
             lines[1] = ChatColor.AQUA.toString() + UUIDUtil.getPlayerId(owner.getUniqueId()) + ChatColor.WHITE +
                     "-" + ChatColor.AQUA + owner.getName().substring(0, Math.min(9, owner.getName().length()));
