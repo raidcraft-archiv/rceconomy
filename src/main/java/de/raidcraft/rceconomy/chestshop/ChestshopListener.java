@@ -208,7 +208,7 @@ public class ChestshopListener implements Listener {
             for(ItemStack currentItem : chest.getInventory().getContents()) {
                 // Ignore damaged or enchanted items
                 if(currentItem == null || currentItem.getType() == Material.AIR ||
-                        currentItem.getDurability() != 0 || currentItem.getEnchantments().size() != 0) {
+                        currentItem.getDurability() != 0) {
                     continue;
                 }
                 itemStack = currentItem;
