@@ -229,8 +229,9 @@ public class ChestshopListener implements Listener {
             // Check if confirmed
             if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType)) {
                 event.getPlayer().sendMessage(ChatColor.GOLD + "Klicke erneut um den Kauf von " +
-                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()) +
-                        " für " + RaidCraft.getEconomy().getFormattedAmount(totalPrice) +
+                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()));
+                event.getPlayer().sendMessage(ChatColor.GOLD + "für " +
+                        RaidCraft.getEconomy().getFormattedAmount(totalPrice) +
                         ChatColor.GOLD + " zu bestätigen!");
                 event.setCancelled(true);
                 return;
@@ -300,8 +301,9 @@ public class ChestshopListener implements Listener {
             // Check if confirmed
             if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType)) {
                 event.getPlayer().sendMessage(ChatColor.GOLD + "Klicke erneut um den Verkauf von " +
-                        itemAmount + "x" + ItemUtils.getFriendlyName(material) +
-                        " für " + RaidCraft.getEconomy().getFormattedAmount(totalPrice) +
+                        itemAmount + "x" + ItemUtils.getFriendlyName(material));
+                event.getPlayer().sendMessage(ChatColor.GOLD + "für " +
+                        RaidCraft.getEconomy().getFormattedAmount(totalPrice) +
                         ChatColor.GOLD + " zu bestätigen!");
                 event.setCancelled(true);
                 return;
