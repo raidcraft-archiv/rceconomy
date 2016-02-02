@@ -212,8 +212,7 @@ public class ChestshopListener implements Listener {
             ItemStack itemStack = null;
             for(ItemStack currentItem : chest.getInventory().getContents()) {
                 // Ignore damaged or enchanted items
-                if(currentItem == null || currentItem.getType() == Material.AIR ||
-                        currentItem.getDurability() != 0) {
+                if(currentItem == null || currentItem.getType() == Material.AIR) {
                     continue;
                 }
                 itemStack = currentItem;
@@ -432,8 +431,8 @@ public class ChestshopListener implements Listener {
             event.getPlayer().sendMessage(ChatColor.RED + "Dieser Shop ist kaputt!");
             return;
         }
-        if(ownerId == 1 || !UUIDUtil.getUuidFromPlayerId(ownerId).equals(event.getPlayer().getUniqueId()) &&
-                !event.getPlayer().hasPermission("chesthop.admin"))
+        if(!event.getPlayer().hasPermission("chesthop.admin") &&
+                (ownerId == 1 || !UUIDUtil.getUuidFromPlayerId(ownerId).equals(event.getPlayer().getUniqueId())))
         {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Dieser Shop gehört dir nicht!");
