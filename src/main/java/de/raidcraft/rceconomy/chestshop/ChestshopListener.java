@@ -233,7 +233,7 @@ public class ChestshopListener implements Listener {
             // Check if confirmed
             if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType, event.getAction())) {
                 event.getPlayer().sendMessage(ChatColor.GOLD + "Klicke erneut um den Kauf von " +
-                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()));
+                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType(), ItemUtils.Language.GERMAN));
                 event.getPlayer().sendMessage(ChatColor.GOLD + "für " +
                         RaidCraft.getEconomy().getFormattedAmount(totalPrice) +
                         ChatColor.GOLD + " zu bestätigen!");
@@ -253,15 +253,15 @@ public class ChestshopListener implements Listener {
             if(shopType == ShopType.ADMIN_SELL) {
                 // Subtract from player
                 RaidCraft.getEconomy().substract(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
-                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()) + " vom Server gekauft");
+                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType(), ItemUtils.Language.GERMAN) + " vom Server gekauft");
             } else {
                 // Subtract from player
                 RaidCraft.getEconomy().substract(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
-                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()) + " von " +
+                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType(), ItemUtils.Language.GERMAN) + " von " +
                                 UUIDUtil.getNameFromUUID(UUIDUtil.getUuidFromPlayerId(ownerId)) + " gekauft");
                 // Add to seller
                 RaidCraft.getEconomy().add(UUIDUtil.getUuidFromPlayerId(ownerId), totalPrice, BalanceSource.TRADE,
-                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType()) + " an " +
+                        itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType(), ItemUtils.Language.GERMAN) + " an " +
                                 event.getPlayer().getName() + " verkauft");
                 // Subtract items from chest
                 chest.getInventory().removeItem(new ItemStack(itemStack.getType(), itemAmount));
@@ -312,7 +312,7 @@ public class ChestshopListener implements Listener {
             // Check if confirmed
             if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType, event.getAction())) {
                 event.getPlayer().sendMessage(ChatColor.GOLD + "Klicke erneut um den Verkauf von " +
-                        itemAmount + "x" + ItemUtils.getFriendlyName(material));
+                        itemAmount + "x" + ItemUtils.getFriendlyName(material, ItemUtils.Language.GERMAN));
                 event.getPlayer().sendMessage(ChatColor.GOLD + "für " +
                         RaidCraft.getEconomy().getFormattedAmount(totalPrice) +
                         ChatColor.GOLD + " zu bestätigen!");
@@ -323,7 +323,7 @@ public class ChestshopListener implements Listener {
             if(shopType == ShopType.ADMIN_BUY) {
                 // Add to seller
                 RaidCraft.getEconomy().add(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
-                        itemAmount + "x" + ItemUtils.getFriendlyName(material) + " an den Server verkauft");
+                        itemAmount + "x" + ItemUtils.getFriendlyName(material, ItemUtils.Language.GERMAN) + " an den Server verkauft");
             } else {
                 // Check player balance
                 if (!RaidCraft.getEconomy().hasEnough(UUIDUtil.getUuidFromPlayerId(ownerId), totalPrice)) {
@@ -335,11 +335,11 @@ public class ChestshopListener implements Listener {
 
                 // Subtract from player
                 RaidCraft.getEconomy().substract(UUIDUtil.getUuidFromPlayerId(ownerId), totalPrice, BalanceSource.TRADE,
-                        itemAmount + "x" + ItemUtils.getFriendlyName(material) + " von " +
+                        itemAmount + "x" + ItemUtils.getFriendlyName(material, ItemUtils.Language.GERMAN) + " von " +
                                 event.getPlayer().getName() + " gekauft");
                 // Add to seller
                 RaidCraft.getEconomy().add(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
-                        itemAmount + "x" + ItemUtils.getFriendlyName(material) + " an " +
+                        itemAmount + "x" + ItemUtils.getFriendlyName(material, ItemUtils.Language.GERMAN) + " an " +
                                 UUIDUtil.getNameFromUUID(UUIDUtil.getUuidFromPlayerId(ownerId)) + " verkauft");
                 // Add item to chest
                 chest.getInventory().addItem(new ItemStack(material, itemAmount));
