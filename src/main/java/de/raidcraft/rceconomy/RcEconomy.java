@@ -293,7 +293,7 @@ public class RcEconomy implements Economy {
         TAccount account = plugin.getAccount(type, accountName);
         List<TFlow> activities = plugin.getDatabase().find(TFlow.class)
                 .where()
-                .eq("account", account).setMaxRows(entries).findList();
+                .eq("account", account).orderBy("id DESC").setMaxRows(entries).findList();
         if (type == AccountType.PLAYER) {
             accountName = UUIDUtil.getNameFromUUID(accountName);
         }
