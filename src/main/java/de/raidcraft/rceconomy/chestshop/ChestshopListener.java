@@ -250,6 +250,9 @@ public class ChestshopListener implements Listener {
                 return;
             }
 
+            ItemStack itemStackCopy = new ItemStack(itemStack);
+            itemStackCopy.setAmount(itemAmount);
+
             if(shopType == ShopType.ADMIN_SELL) {
                 // Subtract from player
                 RaidCraft.getEconomy().substract(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
@@ -264,23 +267,26 @@ public class ChestshopListener implements Listener {
                         itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType(), ItemUtils.Language.GERMAN) + " an " +
                                 event.getPlayer().getName() + " verkauft");
                 // Subtract items from chest
-                chest.getInventory().removeItem(new ItemStack(itemStack.getType(), itemAmount));
+                chest.getInventory().removeItem(itemStackCopy);
             }
 
             // Add item to player
-            InventoryUtils.addOrDropItems(event.getPlayer(), new ItemStack(itemStack.getType(), itemAmount));
+            InventoryUtils.addOrDropItems(event.getPlayer(), itemStackCopy);
         }
         else if(shopType == ShopType.BUY || shopType == ShopType.ADMIN_BUY) {
 
             // Get space left
             int spaceLeft = 0;
             Material material = null;
+            ItemStack targetItem = null;
             for(ItemStack currentItem : chest.getInventory().getContents()) {
                 if(currentItem == null) {
                     spaceLeft = 64;
+                    targetItem = currentItem;
                     if(material != null) break;
                 } else {
                     material = currentItem.getType();
+                    targetItem = currentItem;
                     if (spaceLeft > 0) break;
                 }
             }
@@ -295,7 +301,9 @@ public class ChestshopListener implements Listener {
             int itemInventoryCount = 0;
             for(ItemStack itemStack : event.getPlayer().getInventory().all(material).values())
             {
-                itemInventoryCount += itemStack.getAmount();
+                if(itemStack.getDurability() == targetItem.getDurability()) {
+                    itemInventoryCount += itemStack.getAmount();
+                }
             }
             if(itemInventoryCount == 0) {
                 event.setCancelled(true);
@@ -342,11 +350,11 @@ public class ChestshopListener implements Listener {
                         itemAmount + "x" + ItemUtils.getFriendlyName(material, ItemUtils.Language.GERMAN) + " an " +
                                 UUIDUtil.getNameFromUUID(UUIDUtil.getUuidFromPlayerId(ownerId)) + " verkauft");
                 // Add item to chest
-                chest.getInventory().addItem(new ItemStack(material, itemAmount));
+                chest.getInventory().addItem(new ItemStack(material, itemAmount, targetItem.getDurability()));
             }
 
             // Subtract items from player
-            event.getPlayer().getInventory().removeItem(new ItemStack(material, itemAmount));
+            event.getPlayer().getInventory().removeItem(new ItemStack(material, itemAmount, targetItem.getDurability()));
 
             return;
         }
