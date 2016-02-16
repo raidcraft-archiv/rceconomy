@@ -16,6 +16,8 @@ import java.util.UUID;
 public class ShopUseConformer {
 
     @Getter
+    private String className;
+    @Getter
     private Location location;
     @Getter
     private String shopType;
@@ -24,21 +26,25 @@ public class ShopUseConformer {
 
     private static Map<UUID, ShopUseConformer> registry = new HashMap<>();
 
-    public static void unregister(UUID uuid) {
-
-        registry.remove(uuid);
-    }
-
-    public static boolean checkOrRegister(UUID uuid, Location location, String shopType, Action action) {
+    public static void unregister(String className, UUID uuid) {
 
         if(registry.containsKey(uuid) &&
+                registry.get(uuid).getClassName().equals(className)) {
+            registry.remove(uuid);
+        }
+    }
+
+    public static boolean checkOrRegister(String className, UUID uuid, Location location, String shopType, Action action) {
+
+        if(registry.containsKey(uuid) &&
+                registry.get(uuid).getClassName().equals(className) &&
                 registry.get(uuid).getLocation().equals(location) &&
                 registry.get(uuid).getShopType().equals(shopType) &&
                 registry.get(uuid).getAction() == action) {
-            unregister(uuid);
+            unregister(className, uuid);
             return true;
         } else {
-            registry.put(uuid, new ShopUseConformer(location, shopType, action));
+            registry.put(uuid, new ShopUseConformer(className, location, shopType, action));
             return false;
         }
     }

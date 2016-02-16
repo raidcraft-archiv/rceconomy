@@ -116,25 +116,25 @@ public class ExpSignListener implements Listener {
 
         if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_AIR)
                 || event.getPlayer().isSneaking()) {
-            ShopUseConformer.unregister(event.getPlayer().getUniqueId());
+            ShopUseConformer.unregister(getClass().getSimpleName(), event.getPlayer().getUniqueId());
             return;
         }
 
         // Check if sign
         if(!SignUtil.isSign(event.getClickedBlock())) {
-            ShopUseConformer.unregister(event.getPlayer().getUniqueId());
+            ShopUseConformer.unregister(getClass().getSimpleName(), event.getPlayer().getUniqueId());
             return;
         }
 
         Sign sign = SignUtil.getSign(event.getClickedBlock());
         if(sign == null) {
-            ShopUseConformer.unregister(event.getPlayer().getUniqueId());
+            ShopUseConformer.unregister(getClass().getSimpleName(), event.getPlayer().getUniqueId());
             return;
         }
 
         // Check sign tag
         if(!SignUtil.strip(sign.getLine(0)).equalsIgnoreCase(EXP_SHOP_TAG)) {
-            ShopUseConformer.unregister(event.getPlayer().getUniqueId());
+            ShopUseConformer.unregister(getClass().getSimpleName(), event.getPlayer().getUniqueId());
             return;
         }
 
@@ -142,7 +142,7 @@ public class ExpSignListener implements Listener {
         if(!event.getPlayer().hasPermission("expshop.use")) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Du darfst keinen EXP-Shop benutzen!");
-            ShopUseConformer.unregister(event.getPlayer().getUniqueId());
+            ShopUseConformer.unregister(getClass().getSimpleName(), event.getPlayer().getUniqueId());
             return;
         }
 
@@ -195,7 +195,7 @@ public class ExpSignListener implements Listener {
             }
 
             // Check if confirmed
-            if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType.name(), event.getAction())) {
+            if(!ShopUseConformer.checkOrRegister(getClass().getSimpleName(), event.getPlayer().getUniqueId(), sign.getLocation(), shopType.name(), event.getAction())) {
                 event.getPlayer().sendMessage(ChatColor.GOLD + "Klicke erneut um den Verkauf von " +
                         EXP_PER_SELL + "EXP");
                 event.getPlayer().sendMessage(ChatColor.GOLD + "für " +
