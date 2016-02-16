@@ -1,11 +1,7 @@
 package de.raidcraft.rceconomy.chestshop;
 
-import com.mojang.util.UUIDTypeAdapter;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
-import de.raidcraft.api.economy.Economy;
-import de.raidcraft.rceconomy.bankchest.BankChestManager;
-import de.raidcraft.rceconomy.tables.TBankChest;
 import de.raidcraft.util.*;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
@@ -18,19 +14,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by Philip on 25.01.2016.
@@ -39,11 +27,11 @@ public class ChestshopListener implements Listener {
 
     private static String CHESTSHOP_TAG = "Shop";
 
-    private String[] formatSign(ShopType shopType, Player owner, double price) {
+    private String[] formatSign(ChestShopType shopType, Player owner, double price) {
         String[] lines = new String[4];
 
         lines[0] = ChatColor.YELLOW + "[" + ChatColor.GREEN + CHESTSHOP_TAG + ChatColor.YELLOW + "]";
-        if(shopType == ShopType.ADMIN_BUY || shopType == ShopType.ADMIN_SELL) {
+        if(shopType == ChestShopType.ADMIN_BUY || shopType == ChestShopType.ADMIN_SELL) {
             lines[1] = ChatColor.AQUA.toString() + "1" + ChatColor.WHITE +
                     "-" + ChatColor.AQUA + "Server";
         } else {
@@ -86,7 +74,7 @@ public class ChestshopListener implements Listener {
         }
 
         // Check permissions
-        if(!event.getPlayer().hasPermission(ShopType.SELL.getPermission())) {
+        if(!event.getPlayer().hasPermission(ChestShopType.SELL.getPermission())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Du darfst keinen Shop aufstellen!");
             return;
@@ -103,7 +91,7 @@ public class ChestshopListener implements Listener {
         chest = (Chest)block.getState();
 
         // Get type
-        ShopType shopType = ShopType.getByDisplayText(ChatColor.stripColor(event.getLine(2)));
+        ChestShopType shopType = ChestShopType.getByDisplayText(ChatColor.stripColor(event.getLine(2)));
         if(shopType == null) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Gebe in der dritten Zeile den Typ des Shops an (Ankauf oder Verkauf)!");
@@ -177,7 +165,7 @@ public class ChestshopListener implements Listener {
         chest = (Chest)block.getState();
 
         // Get type
-        ShopType shopType = ShopType.getByDisplayText(ChatColor.stripColor(sign.getLine(2)));
+        ChestShopType shopType = ChestShopType.getByDisplayText(ChatColor.stripColor(sign.getLine(2)));
         if(shopType == null) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Unbekannter Shop Typ!");
@@ -206,7 +194,7 @@ public class ChestshopListener implements Listener {
             return;
         }
 
-        if(shopType == ShopType.SELL || shopType == ShopType.ADMIN_SELL) {
+        if(shopType == ChestShopType.SELL || shopType == ChestShopType.ADMIN_SELL) {
 
             // Get current item
             ItemStack itemStack = null;
@@ -231,7 +219,7 @@ public class ChestshopListener implements Listener {
             double totalPrice = itemAmount * price;
 
             // Check if confirmed
-            if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType, event.getAction())) {
+            if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType.name(), event.getAction())) {
                 event.getPlayer().sendMessage(ChatColor.GOLD + "Klicke erneut um den Kauf von " +
                         itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType(), ItemUtils.Language.GERMAN));
                 event.getPlayer().sendMessage(ChatColor.GOLD + "für " +
@@ -253,7 +241,7 @@ public class ChestshopListener implements Listener {
             ItemStack itemStackCopy = new ItemStack(itemStack);
             itemStackCopy.setAmount(itemAmount);
 
-            if(shopType == ShopType.ADMIN_SELL) {
+            if(shopType == ChestShopType.ADMIN_SELL) {
                 // Subtract from player
                 RaidCraft.getEconomy().substract(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
                         itemAmount + "x" + ItemUtils.getFriendlyName(itemStack.getType(), ItemUtils.Language.GERMAN) + " vom Server gekauft");
@@ -273,7 +261,7 @@ public class ChestshopListener implements Listener {
             // Add item to player
             InventoryUtils.addOrDropItems(event.getPlayer(), itemStackCopy);
         }
-        else if(shopType == ShopType.BUY || shopType == ShopType.ADMIN_BUY) {
+        else if(shopType == ChestShopType.BUY || shopType == ChestShopType.ADMIN_BUY) {
 
             // Get space left
             int spaceLeft = 0;
@@ -318,7 +306,7 @@ public class ChestshopListener implements Listener {
             double totalPrice = itemAmount * price;
 
             // Check if confirmed
-            if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType, event.getAction())) {
+            if(!ShopUseConformer.checkOrRegister(event.getPlayer().getUniqueId(), sign.getLocation(), shopType.name(), event.getAction())) {
                 event.getPlayer().sendMessage(ChatColor.GOLD + "Klicke erneut um den Verkauf von " +
                         itemAmount + "x" + ItemUtils.getFriendlyName(material, ItemUtils.Language.GERMAN));
                 event.getPlayer().sendMessage(ChatColor.GOLD + "für " +
@@ -328,7 +316,7 @@ public class ChestshopListener implements Listener {
                 return;
             }
 
-            if(shopType == ShopType.ADMIN_BUY) {
+            if(shopType == ChestShopType.ADMIN_BUY) {
                 // Add to seller
                 RaidCraft.getEconomy().add(event.getPlayer().getUniqueId(), totalPrice, BalanceSource.TRADE,
                         itemAmount + "x" + ItemUtils.getFriendlyName(material, ItemUtils.Language.GERMAN) + " an den Server verkauft");

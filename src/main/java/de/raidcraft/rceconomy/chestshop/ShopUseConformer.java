@@ -1,7 +1,6 @@
 package de.raidcraft.rceconomy.chestshop;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.event.block.Action;
@@ -19,7 +18,7 @@ public class ShopUseConformer {
     @Getter
     private Location location;
     @Getter
-    private ShopType shopType;
+    private String shopType;
     @Getter
     private Action action;
 
@@ -30,11 +29,11 @@ public class ShopUseConformer {
         registry.remove(uuid);
     }
 
-    public static boolean checkOrRegister(UUID uuid, Location location, ShopType shopType, Action action) {
+    public static boolean checkOrRegister(UUID uuid, Location location, String shopType, Action action) {
 
         if(registry.containsKey(uuid) &&
                 registry.get(uuid).getLocation().equals(location) &&
-                registry.get(uuid).getShopType() ==shopType &&
+                registry.get(uuid).getShopType().equals(shopType) &&
                 registry.get(uuid).getAction() == action) {
             unregister(uuid);
             return true;
