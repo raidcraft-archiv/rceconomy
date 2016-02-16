@@ -39,8 +39,8 @@ public class PlayerListener implements Listener {
                 TAccount tAccount = database.find(TAccount.class).where()
                         .eq("name", player.getUniqueId().toString().toLowerCase()).findUnique();
                 if(tAccount.getExp() != 0) {
-                    PlayerExperienceUtil ownerExpUtil = new PlayerExperienceUtil(player);
-                    ownerExpUtil.setExp(ownerExpUtil.getCurrentExp() + tAccount.getExp());
+                    PlayerExperienceUtil expUtil = new PlayerExperienceUtil(player);
+                    expUtil.setExp(expUtil.getCurrentExp() + tAccount.getExp());
                     player.sendMessage(ChatColor.GREEN + "Dir wurden seit dem letzten Besuch " + tAccount.getExp() + "EXP verkauft!");
                     tAccount.setExp(0);
                     database.update(tAccount);
