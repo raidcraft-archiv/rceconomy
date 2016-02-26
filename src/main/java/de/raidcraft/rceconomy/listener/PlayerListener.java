@@ -40,12 +40,12 @@ public class PlayerListener implements Listener {
                         .eq("name", player.getUniqueId().toString().toLowerCase()).findUnique();
                 if(tAccount.getExp() != 0) {
                     PlayerExperienceUtil expUtil = new PlayerExperienceUtil(player);
-                    expUtil.setExp(expUtil.getCurrentExp() + tAccount.getExp());
+                    expUtil.setExp(expUtil.getCurrentFractionalXP() + (double)tAccount.getExp());
                     player.sendMessage(ChatColor.GREEN + "Dir wurden seit dem letzten Besuch " + tAccount.getExp() + "EXP verkauft!");
                     tAccount.setExp(0);
                     database.update(tAccount);
                 }
             }
-        }, 10);
+        }, 20);
     }
 }
