@@ -78,18 +78,18 @@ public class ExpSignListener implements Listener {
             return;
         }
 
-        // Check permissions
-        if(!event.getPlayer().hasPermission(ExpShopType.SELL.getPermission())) {
-            event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "Du darfst keinen EXP-Shop aufstellen!");
-            return;
-        }
-
         // Get type
         ExpShopType shopType = ExpShopType.getByDisplayText(ChatColor.stripColor(event.getLine(2)));
         if(shopType == null) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Gebe in der dritten Zeile den Typ des Shops an (Ankauf oder Verkauf)!");
+            return;
+        }
+
+        // Check permissions
+        if(!event.getPlayer().hasPermission(shopType.getPermission())) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED + "Du darfst keinen EXP-Shop aufstellen!");
             return;
         }
 
