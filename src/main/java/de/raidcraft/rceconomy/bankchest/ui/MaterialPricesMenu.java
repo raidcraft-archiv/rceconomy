@@ -14,6 +14,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Wool;
 
 import java.util.List;
 
@@ -86,7 +87,8 @@ public class MaterialPricesMenu {
         MenuUtil.addPlaceholder(menu, 7);
 
         // Back
-        itemStack = new ItemStack(new ItemStack(Material.WOOL, 1, DyeColor.RED.getData()));
+        itemStack = new Wool(DyeColor.RED).toItemStack();
+//        itemStack = new ItemStack(new ItemStack(Material.WOOL, 1, DyeColor.RED.getData()));
         ItemUtils.setDisplayName(itemStack, "Schließen");
         menu.addMenuItem(new MenuItemAPI() {
             @Override
