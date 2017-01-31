@@ -87,7 +87,7 @@ public class MaterialPricesMenu {
         MenuUtil.addPlaceholder(menu, 7);
 
         // Back
-        itemStack = new Wool(DyeColor.RED).toItemStack();
+        itemStack = new Wool(DyeColor.RED).toItemStack(1);
 //        itemStack = new ItemStack(new ItemStack(Material.WOOL, 1, DyeColor.RED.getData()));
         ItemUtils.setDisplayName(itemStack, "Schließen");
         menu.addMenuItem(new MenuItemAPI() {
