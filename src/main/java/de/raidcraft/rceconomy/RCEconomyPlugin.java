@@ -7,19 +7,17 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.api.economy.Economy;
-import de.raidcraft.rcconversations.actions.ActionManager;
-import de.raidcraft.rceconomy.actionapi.HasEnoughMoneyAction;
-import de.raidcraft.rceconomy.actionapi.ModifyMoneyAction;
-import de.raidcraft.rceconomy.actionapi.ParseMoneyInputAction;
-import de.raidcraft.rceconomy.actionapi.SubstractMoneyAction;
+import de.raidcraft.rceconomy.actionapi.AddMoneyAction;
+import de.raidcraft.rceconomy.actionapi.RemoveMoneyAction;
 import de.raidcraft.rceconomy.bankchest.BankChestListener;
+import de.raidcraft.rceconomy.banksign.BankSignListener;
 import de.raidcraft.rceconomy.chestshop.ChestshopListener;
 import de.raidcraft.rceconomy.commands.MoneyCommands;
 import de.raidcraft.rceconomy.commands.StockMarketCommands;
 import de.raidcraft.rceconomy.expsign.ExpSignListener;
 import de.raidcraft.rceconomy.listener.BalanceListener;
-import de.raidcraft.rceconomy.banksign.BankSignListener;
 import de.raidcraft.rceconomy.listener.PlayerListener;
+import de.raidcraft.rceconomy.requirements.HasEnoughMoneyRequirement;
 import de.raidcraft.rceconomy.tables.TAccount;
 import de.raidcraft.rceconomy.tables.TBankChest;
 import de.raidcraft.rceconomy.tables.TBankMaterial;
@@ -61,12 +59,10 @@ public class RCEconomyPlugin extends BasePlugin {
         registerEvents(new ChestshopListener());
         registerEvents(new ExpSignListener());
 
-        ActionAPI.register(this)
-                .action(new ModifyMoneyAction());
-
-        ActionManager.registerAction(new HasEnoughMoneyAction());
-        ActionManager.registerAction(new ParseMoneyInputAction());
-        ActionManager.registerAction(new SubstractMoneyAction());
+        ActionAPI.register(this).global()
+                .requirement(new HasEnoughMoneyRequirement())
+                .action(new RemoveMoneyAction())
+                .action(new AddMoneyAction());
 
         // inject Vault
         new VaultEco(this);

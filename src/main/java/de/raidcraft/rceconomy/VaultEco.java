@@ -3,7 +3,6 @@ package de.raidcraft.rceconomy;
 import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.util.UUIDUtil;
-import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -29,10 +28,10 @@ public class VaultEco implements net.milkbowl.vault.economy.Economy {
             plugin.getLogger().severe("Vault not found - cannot inject");
             return;
         }
-        hookIntoVault((Vault) vPlugin);
+        hookIntoVault(vPlugin);
     }
 
-    private void hookIntoVault(Vault vault) {
+    private void hookIntoVault(Plugin vault) {
 
         try {
             Bukkit.getServicesManager().register(net.milkbowl.vault.economy.Economy.class,
