@@ -12,9 +12,9 @@ public class EconomyConfig extends ConfigurationBase<RCEconomyPlugin> {
     public double initialAmount = 0.0;
     @Setting("size-print-flow-entries")
     public int sizePrintFlowEntries = 10;
-    @Setting("currency-name-singular")
+    @Setting("currency-displayName-singular")
     public String currencySingular = "Coin";
-    @Setting("currency-name-plural")
+    @Setting("currency-displayName-plural")
     public String currencyPlural = "Coins";
 
     public EconomyConfig(RCEconomyPlugin plugin) {
