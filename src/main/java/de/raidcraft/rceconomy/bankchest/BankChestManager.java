@@ -6,10 +6,8 @@ import de.raidcraft.api.economy.Economy;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
 import de.raidcraft.rceconomy.tables.TBankChest;
 import de.raidcraft.rceconomy.tables.TBankMaterial;
-import de.raidcraft.util.UUIDUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -59,7 +57,7 @@ public class BankChestManager {
     public TBankChest getChest(Location location) {
 
         TBankChest bankChest = plugin.getDatabase().find(TBankChest.class).where()
-                .eq("x", location.getBlockX()).eq("y", location.getBlockY()).eq("z", location.getBlockZ()).findUnique();
+                .eq("x", location.getBlockX()).eq("y", location.getBlockY()).eq("z", location.getBlockZ()).findOne();
         return bankChest;
     }
 

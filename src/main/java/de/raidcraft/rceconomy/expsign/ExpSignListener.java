@@ -1,19 +1,16 @@
 package de.raidcraft.rceconomy.expsign;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
 import de.raidcraft.rceconomy.chestshop.ShopUseConformer;
 import de.raidcraft.rceconomy.tables.TAccount;
-import de.raidcraft.util.*;
+import de.raidcraft.util.PlayerExperienceUtil;
+import de.raidcraft.util.SignUtil;
+import de.raidcraft.util.UUIDUtil;
+import io.ebean.EbeanServer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Created by Philip on 25.01.2016.
@@ -234,7 +230,7 @@ public class ExpSignListener implements Listener {
                 } else {
                     EbeanServer database = RaidCraft.getComponent(RCEconomyPlugin.class).getDatabase();
                     TAccount tAccount = database.find(TAccount.class).where()
-                            .eq("name", UUIDUtil.getUuidFromPlayerId(ownerId).toString().toLowerCase()).findUnique();
+                            .eq("name", UUIDUtil.getUuidFromPlayerId(ownerId).toString().toLowerCase()).findOne();
                     tAccount.setExp(tAccount.getExp() + EXP_PER_SELL);
                     database.update(tAccount);
                 }

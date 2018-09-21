@@ -1,11 +1,11 @@
 package de.raidcraft.rceconomy.listener;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.rceconomy.RCEconomyPlugin;
 import de.raidcraft.rceconomy.tables.TAccount;
 import de.raidcraft.util.PlayerExperienceUtil;
+import io.ebean.EbeanServer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -37,7 +37,7 @@ public class PlayerListener implements Listener {
 
                 EbeanServer database = RaidCraft.getComponent(RCEconomyPlugin.class).getDatabase();
                 TAccount tAccount = database.find(TAccount.class).where()
-                        .eq("name", player.getUniqueId().toString().toLowerCase()).findUnique();
+                        .eq("name", player.getUniqueId().toString().toLowerCase()).findOne();
                 if(tAccount.getExp() != 0) {
                     PlayerExperienceUtil expUtil = new PlayerExperienceUtil(player);
                     expUtil.setExp(expUtil.getCurrentFractionalXP() + (double)tAccount.getExp());

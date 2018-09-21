@@ -78,7 +78,7 @@ public class RCEconomyPlugin extends BasePlugin {
         return getDatabase().find(TAccount.class)
                 .where()
                 .eq("type", type)
-                .eq("name", name).setMaxRows(1).findUnique();
+                .eq("name", name).setMaxRows(1).findOne();
     }
 
 
@@ -100,7 +100,6 @@ public class RCEconomyPlugin extends BasePlugin {
         } catch (PersistenceException e) {
             e.printStackTrace();
             getLogger().warning("Installing database for " + getDescription().getName() + " due to first time usage");
-            installDDL();
         }
     }
 
