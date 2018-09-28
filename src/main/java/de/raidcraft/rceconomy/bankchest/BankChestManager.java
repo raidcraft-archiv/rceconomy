@@ -43,31 +43,31 @@ public class BankChestManager {
 
     public TBankChest getChest(UUID uuid, BankChestType type) {
 
-        List<TBankChest> chests = plugin.getDatabase().find(TBankChest.class).where().eq("player_id", uuid).eq("type", type.name()).findList();
+        List<TBankChest> chests = plugin.getRcDatabase().find(TBankChest.class).where().eq("player_id", uuid).eq("type", type.name()).findList();
         if(chests == null || chests.isEmpty()) return null;
         return chests.get(0);
     }
 
     public TBankChest getChest(int id) {
 
-        TBankChest chests = plugin.getDatabase().find(TBankChest.class, id);
+        TBankChest chests = plugin.getRcDatabase().find(TBankChest.class, id);
         return chests;
     }
 
     public TBankChest getChest(Location location) {
 
-        TBankChest bankChest = plugin.getDatabase().find(TBankChest.class).where()
+        TBankChest bankChest = plugin.getRcDatabase().find(TBankChest.class).where()
                 .eq("x", location.getBlockX()).eq("y", location.getBlockY()).eq("z", location.getBlockZ()).findOne();
         return bankChest;
     }
 
     public void unregister(int id) {
 
-        TBankChest bankChest = plugin.getDatabase().find(TBankChest.class, id);
+        TBankChest bankChest = plugin.getRcDatabase().find(TBankChest.class, id);
         if(bankChest == null) {
             return;
         }
-        plugin.getDatabase().delete(bankChest);
+        plugin.getRcDatabase().delete(bankChest);
     }
 
     public TBankChest register(Location signLocation, BankChestType type, UUID uuid) {
@@ -75,7 +75,7 @@ public class BankChestManager {
         // Delete old chest
         TBankChest bankChest = getChest(uuid, type);
         if(bankChest != null) {
-            plugin.getDatabase().delete(bankChest);
+            plugin.getRcDatabase().delete(bankChest);
         }
 
         bankChest = new TBankChest();
@@ -85,7 +85,7 @@ public class BankChestManager {
         bankChest.setX(signLocation.getBlockX());
         bankChest.setY(signLocation.getBlockY());
         bankChest.setZ(signLocation.getBlockZ());
-        plugin.getDatabase().save(bankChest);
+        plugin.getRcDatabase().save(bankChest);
 
         return getChest(signLocation);
     }
@@ -156,6 +156,6 @@ public class BankChestManager {
         TBankChest bankChest = getChest(location);
         if(bankChest == null) return;
         bankChest.setLastEmptying(new Date(System.currentTimeMillis()));
-        plugin.getDatabase().update(bankChest);
+        plugin.getRcDatabase().update(bankChest);
     }
 }

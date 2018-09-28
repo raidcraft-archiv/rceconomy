@@ -228,7 +228,7 @@ public class ExpSignListener implements Listener {
                     ownerExpUtil.setExp(ownerExpUtil.getCurrentExp() + EXP_PER_SELL);
                     owner.sendMessage(ChatColor.GREEN + "Dir wurden " + EXP_PER_SELL + "EXP verkauft!");
                 } else {
-                    EbeanServer database = RaidCraft.getComponent(RCEconomyPlugin.class).getDatabase();
+                    EbeanServer database = RaidCraft.getComponent(RCEconomyPlugin.class).getRcDatabase();
                     TAccount tAccount = database.find(TAccount.class).where()
                             .eq("name", UUIDUtil.getUuidFromPlayerId(ownerId).toString().toLowerCase()).findOne();
                     tAccount.setExp(tAccount.getExp() + EXP_PER_SELL);

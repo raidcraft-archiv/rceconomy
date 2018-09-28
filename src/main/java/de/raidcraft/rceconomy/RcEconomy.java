@@ -60,7 +60,7 @@ public class RcEconomy implements Economy {
         account.setName(accountName);
         account.setType(type);
         account.setBalance(config.initialAmount);
-        plugin.getDatabase().save(account);
+        plugin.getRcDatabase().save(account);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class RcEconomy implements Economy {
     @Override
     public void deleteAccount(AccountType type, String accountName) {
 
-        plugin.getDatabase().delete(plugin.getAccount(type, accountName));
+        plugin.getRcDatabase().delete(plugin.getAccount(type, accountName));
     }
 
     @Override
@@ -230,17 +230,17 @@ public class RcEconomy implements Economy {
 
         if (amount == 0.0) return;
 
-        plugin.getDatabase().beginTransaction();
+        plugin.getRcDatabase().beginTransaction();
         try {
             TAccount account = plugin.getAccount(type, accountName);
             account.setBalance(account.getBalance() + amount);
-            plugin.getDatabase().save(account);
+            plugin.getRcDatabase().save(account);
 
-            plugin.getDatabase().commitTransaction();
+            plugin.getRcDatabase().commitTransaction();
             addActivity(account, amount, source, detail);
 
         } finally {
-            plugin.getDatabase().endTransaction();
+            plugin.getRcDatabase().endTransaction();
         }
     }
 
@@ -266,17 +266,17 @@ public class RcEconomy implements Economy {
     public void set(AccountType type, String accountName,
                     double amount, BalanceSource source, String detail) {
 
-        plugin.getDatabase().beginTransaction();
+        plugin.getRcDatabase().beginTransaction();
         try {
             TAccount account = plugin.getAccount(type, accountName);
             account.setBalance(amount);
-            plugin.getDatabase().save(account);
+            plugin.getRcDatabase().save(account);
 
-            plugin.getDatabase().commitTransaction();
+            plugin.getRcDatabase().commitTransaction();
             addActivity(account, amount, source, detail);
 
         } finally {
-            plugin.getDatabase().endTransaction();
+            plugin.getRcDatabase().endTransaction();
         }
     }
 
@@ -291,7 +291,7 @@ public class RcEconomy implements Economy {
     public void printFlow(CommandSender sender, AccountType type, String accountName, int entries) {
 
         TAccount account = plugin.getAccount(type, accountName);
-        List<TFlow> activities = plugin.getDatabase().find(TFlow.class)
+        List<TFlow> activities = plugin.getRcDatabase().find(TFlow.class)
                 .where()
                 .eq("account", account).orderBy("id DESC").setMaxRows(entries).findList();
         if (type == AccountType.PLAYER) {
@@ -321,7 +321,7 @@ public class RcEconomy implements Economy {
         flow.setSource(source);
         flow.setDetail(detail);
         flow.setAccount(account);
-        plugin.getDatabase().save(flow);
+        plugin.getRcDatabase().save(flow);
         RaidCraft.callEvent(new BalanceChangeEvent(source, detail,
                 account.getType(), account.getName(), amount));
     }

@@ -75,7 +75,7 @@ public class RCEconomyPlugin extends BasePlugin {
 
     public TAccount getAccount(AccountType type, String name) {
 
-        return getDatabase().find(TAccount.class)
+        return getRcDatabase().find(TAccount.class)
                 .where()
                 .eq("type", type)
                 .eq("name", name).setMaxRows(1).findOne();
@@ -96,7 +96,7 @@ public class RCEconomyPlugin extends BasePlugin {
     private void setupDatabase() {
 
         try {
-            getDatabase();
+            getRcDatabase();
         } catch (PersistenceException e) {
             e.printStackTrace();
             getLogger().warning("Installing database for " + getDescription().getName() + " due to first time usage");

@@ -30,13 +30,13 @@ public class BankMaterialManager {
 
     public TBankMaterial getMaterial(Material material) {
 
-        TBankMaterial bankMaterial = plugin.getDatabase().find(TBankMaterial.class).where().ieq("material", material.name()).findOne();
+        TBankMaterial bankMaterial = plugin.getRcDatabase().find(TBankMaterial.class).where().ieq("material", material.name()).findOne();
         return bankMaterial;
     }
 
     public List<TBankMaterial> getAllMaterials() {
 
-        List<TBankMaterial> bankMaterials = plugin.getDatabase().find(TBankMaterial.class).findList();
+        List<TBankMaterial> bankMaterials = plugin.getRcDatabase().find(TBankMaterial.class).findList();
         return bankMaterials;
     }
 }

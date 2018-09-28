@@ -35,7 +35,7 @@ public class PlayerListener implements Listener {
                 Player player = Bukkit.getPlayer(event.getPlayer().getUniqueId());
                 if(player == null) return;
 
-                EbeanServer database = RaidCraft.getComponent(RCEconomyPlugin.class).getDatabase();
+                EbeanServer database = RaidCraft.getComponent(RCEconomyPlugin.class).getRcDatabase();
                 TAccount tAccount = database.find(TAccount.class).where()
                         .eq("name", player.getUniqueId().toString().toLowerCase()).findOne();
                 if(tAccount.getExp() != 0) {
