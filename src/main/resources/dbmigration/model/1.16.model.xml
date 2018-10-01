@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <createTable name="rc_economy_balance" pkName="pk_rc_economy_balance">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="name" type="varchar"/>
+            <column name="balance" type="double" notnull="true"/>
+            <column name="exp" type="integer" notnull="true"/>
+            <column name="type" type="varchar(6)" checkConstraint="check ( type in ('PLAYER','PLUGIN','CITY'))"
+                    checkConstraintName="ck_rc_economy_balance_type"/>
+        </createTable>
+        <createTable name="rc_economy_bankchests" pkName="pk_rc_economy_bankchests">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="player_id" type="uuid"/>
+            <column name="type" type="varchar"/>
+            <column name="last_emptying" type="timestamp"/>
+            <column name="x" type="integer" notnull="true"/>
+            <column name="y" type="integer" notnull="true"/>
+            <column name="z" type="integer" notnull="true"/>
+        </createTable>
+        <createTable name="rc_economy_bank_materials" pkName="pk_rc_economy_bank_materials">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="material" type="varchar"/>
+            <column name="price_buy" type="double" notnull="true"/>
+            <column name="price_sell" type="double" notnull="true"/>
+            <column name="buy" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="sell" type="boolean" defaultValue="false" notnull="true"/>
+        </createTable>
+        <createTable name="rc_economy_flow" pkName="pk_rc_economy_flow">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="amount" type="double" notnull="true"/>
+            <column name="source" type="integer" checkConstraint="check ( source in (0,1,2,3,4,5,6,7,8,9,10,11,12,13))"
+                    checkConstraintName="ck_rc_economy_flow_source"/>
+            <column name="detail" type="varchar"/>
+            <column name="date" type="timestamp"/>
+            <column name="account_id" type="integer" references="rc_economy_balance.id"
+                    foreignKeyName="fk_rc_economy_flow_account_id" foreignKeyIndex="ix_rc_economy_flow_account_id"/>
+        </createTable>
+    </changeSet>
+</migration>

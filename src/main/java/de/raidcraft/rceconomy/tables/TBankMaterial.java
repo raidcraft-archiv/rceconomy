@@ -5,8 +5,6 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by Philip on 08.01.2016.
@@ -14,7 +12,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "rceconomy_bank_materials")
+@Table(name = "rc_economy_bank_materials")
 public class TBankMaterial {
 
     @Id

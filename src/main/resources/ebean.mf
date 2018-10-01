@@ -1,0 +1,3 @@
+entity-packages: de.raidcraft.rceconomy
+transactional-packages: de.raidcraft.rceconomy
+querybean-packages: de.raidcraft.rceconomy
