@@ -1,5 +1,6 @@
 package de.raidcraft.rceconomy.listener;
 
+import com.google.common.base.Strings;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.AccountType;
 import de.raidcraft.api.economy.BalanceChangeEvent;
@@ -22,6 +23,9 @@ public class BalanceListener implements Listener {
     @EventHandler
     public void onBalanceChange(BalanceChangeEvent event) {
 
+        if (!plugin.getEconomyConfig().balanceChangeEnabled) {
+            return;
+        }
         if (event.getType() != AccountType.PLAYER) {
             return;
         }
@@ -30,10 +34,19 @@ public class BalanceListener implements Listener {
             return;
         }
 
-        player.sendMessage(ChatColor.GREEN + "Kontobewegung: " + plugin.getApi().getFormattedAmount(event.getAmount())
-                + ChatColor.GREEN + " Grund: " + ChatColor.YELLOW + event.getSource().getFriendlyName());
-        if (event.getDetail() != null && event.getDetail().length() > 0) {
-            player.sendMessage(ChatColor.GREEN + "Details: " + ChatColor.WHITE + event.getDetail());
+        String message = plugin.getEconomyConfig().balanceChangeText
+                .replace("%amount%", event.getAmount() + "")
+                .replace("%formatted-amount%", plugin.getApi().getFormattedAmount(event.getAmount()))
+                .replace("%reason%", event.getSource().getFriendlyName())
+                .replace("%player%", player.getDisplayName());
+        player.sendMessage(message);
+        if (event.getDetail() != null && event.getDetail().length() > 0 && !Strings.isNullOrEmpty(plugin.getEconomyConfig().balanceDetailsText)) {
+            player.sendMessage(plugin.getEconomyConfig().balanceDetailsText
+                    .replace("%details%", event.getDetail())
+                    .replace("%amount%", event.getAmount() + "")
+                    .replace("%formatted-amount%", plugin.getApi().getFormattedAmount(event.getAmount()))
+                    .replace("%reason%", event.getSource().getFriendlyName())
+                    .replace("%player%", player.getDisplayName()));
         }
     }
 }

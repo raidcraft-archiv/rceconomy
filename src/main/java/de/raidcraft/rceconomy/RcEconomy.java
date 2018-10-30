@@ -25,8 +25,7 @@ public class RcEconomy implements Economy {
 
     private RCEconomyPlugin plugin;
     // group 2 = gold, group 4 = silver, group 6 = copper
-    private static final Pattern CURRENCY_PATTERN =
-            Pattern.compile("^((\\d+)[gG])?\\s?((\\d+)[sS])?\\s?((\\d+)[cCkK]?)?$");
+    private final Pattern CURRENCY_PATTERN;
     private EconomyConfig config;
 
 
@@ -34,6 +33,7 @@ public class RcEconomy implements Economy {
 
         this.plugin = plugin;
         this.config = config;
+        CURRENCY_PATTERN = Pattern.compile("^((\\d+)[" + config.currencyFirstLetters + "])?\\s?((\\d+)[" + config.currencySecondLetters + "])?\\s?((\\d+)[" + config.currencyThirdLetters + "]?)?$");
     }
 
 
