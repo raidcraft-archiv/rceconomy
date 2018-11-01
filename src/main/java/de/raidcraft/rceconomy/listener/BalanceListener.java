@@ -34,7 +34,7 @@ public class BalanceListener implements Listener {
             return;
         }
 
-        String message = plugin.getEconomyConfig().balanceChangeText
+        String message = (event.getAmount() >= 0 ? plugin.getEconomyConfig().balanceChangeText : plugin.getEconomyConfig().balanceChangeNegativeText)
                 .replace("%amount%", event.getAmount() + "")
                 .replace("%formatted-amount%", plugin.getApi().getFormattedAmount(event.getAmount()))
                 .replace("%reason%", event.getSource().getFriendlyName())

@@ -33,6 +33,8 @@ public class EconomyConfig extends ConfigurationBase<RCEconomyPlugin> {
     @Setting("messages.balance-change.text")
     @Comment("The text that is displayed to the player when a balance change happens.")
     public String balanceChangeText = "&2Kontobewegung: %formatted-amount% Grund: &e%reason%";
+    @Setting("messages.balance-change.negative-text")
+    public String balanceChangeNegativeText = "&2Kontobewegung: %formatted-amount% Grund: &e%reason%";
     @Setting("messages.balance-change.details")
     @Comment("Optional details text that is shown to the player.")
     public String balanceDetailsText = "&2Details: &7%details%";
