@@ -27,24 +27,12 @@ public class MenuUtil {
     private static Map<String, ItemStack> skullCache = new HashMap<>();
     public static int MAX_SLOTS_PER_MENU = 36;
 
-    public static ItemStack getPlayerSkull(Player player) {
-        ItemStack skullItem = skullCache.get(player.getName());
-        if(skullItem == null) {
-            skullItem = new ItemStack(Material.SKULL_ITEM, 1, (byte) SkullType.PLAYER.ordinal());
-            SkullMeta skullMeta = (SkullMeta) Bukkit.getItemFactory().getItemMeta(Material.SKULL_ITEM);
-            skullMeta.setOwner(player.getName());
-            skullItem.setItemMeta(skullMeta);
-            skullCache.put(player.getName(), skullItem);
-        }
-        return skullItem;
-    }
-
     public static void addPlaceholder(Menu menu, int number) {
 
         ItemStack itemStack;
 
         for(int i = 0; i < number; i++) {
-            itemStack = ItemUtils.getGlassPane(DyeColor.RED);
+            itemStack = new ItemStack(Material.RED_STAINED_GLASS_PANE);
             ItemUtils.setDisplayName(itemStack, "~");
             menu.addMenuItem(new MenuItem().setItem(itemStack));
         }
