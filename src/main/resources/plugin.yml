@@ -5,3 +5,4 @@ description: Provides money transfer.
 author: Strasse36, IDragonfire
 website: http://www.raid-craft.de
 depend: [Vault, RaidCraft-API, RCConversations]
+api-version: 1.13
